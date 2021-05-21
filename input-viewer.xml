@@ -1,0 +1,8 @@
+<Project Version="2" Name="input-viewer" FolderName="Packages">
+	<OutputDirectory>.</OutputDirectory>
+	<TemporaryOutputDirectory>_PackageInt</TemporaryOutputDirectory>
+	<Packages>
+		<Package>PackageDefinitions\spitice-ingamepanels-inputviewer.xml</Package>
+	</Packages>
+</Project>
+

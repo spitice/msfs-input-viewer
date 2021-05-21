@@ -1,0 +1,8 @@
+.vscode
+.yarn
+.pnp.*
+node_modules
+dist
+_PackageInt
+
+_copy-to-msfs.bat
