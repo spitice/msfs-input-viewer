@@ -1,0 +1,256 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+#DevOverlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+  pointer-events: none;
+}
+#DevOverlay > .error {
+  background-color: crimson;
+}
+
+#InputViewer #InputViewer_Container {
+  overflow: hidden;
+  --widgetWidth: 100px;
+  --panelDim: calc(var(--widgetWidth) * (220 / 280));
+  --throttlePanelWidth: calc(var(--panelDim) * (60 / 220));
+  --rudderPanelHeight: calc(var(--panelDim) * (40 / 220));
+  position: absolute;
+  width: var(--containerWidth);
+  height: var(--containerHeight);
+  display: grid;
+  grid-template-columns: var(--throttlePanelWidth) var(--panelDim);
+  grid-template-rows: var(--panelDim) var(--rudderPanelHeight);
+  grid-template-areas: "throttle stick" "config rudder";
+  justify-content: space-evenly;
+  align-content: center;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+#InputViewer #InputViewer_Container #ConfigPanel {
+  grid-area: config;
+}
+#InputViewer #InputViewer_Container #StickPanel {
+  grid-area: stick;
+}
+#InputViewer #InputViewer_Container #RudderPanel {
+  grid-area: rudder;
+}
+#InputViewer #InputViewer_Container #ThrottlePanel {
+  grid-area: throttle;
+}
+
+#ConfigPanel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+toggle-button#TogglePropMix .title {
+  margin: 0;
+}
+toggle-button#TogglePropMix icon-element {
+  position: absolute;
+  top: calc(var(--screenHeight) * (2px / 2160));
+  width: calc(var(--screenHeight) * (36px / 2160));
+  height: calc(var(--screenHeight) * (36px / 2160));
+  transition: left var(--animationTime) var(--animationEffect) , opacity var(--animationTime) var(--animationEffect);
+}
+toggle-button#TogglePropMix icon-element#PropellerIcon {
+  left: var(--leftPos, calc(var(--screenHeight) * (42.2px / 2160)));
+}
+toggle-button#TogglePropMix icon-element#MixtureIcon {
+  left: var(--leftPos, calc(var(--screenHeight) * (56px / 2160)));
+}
+toggle-button#TogglePropMix .ToggleButton .toggleButtonWrapper .toggleButton .state {
+  left: var(--leftPos, calc(var(--screenHeight) * (32px / 2160)));
+  transition: left var(--animationTime) var(--animationEffect) , background-color var(--animationTime) var(--animationEffect);
+}
+toggle-button#TogglePropMix:not(.off) .ToggleButton .toggleButtonWrapper .toggleButton .state {
+  background-color: #4F4F4F;
+}
+toggle-button#TogglePropMix.off icon-element {
+  opacity: 0;
+}
+
+#InputViewer_Container .grad1, #InputViewer_Container .grad2, #InputViewer_Container .grad3 {
+  fill: none;
+  stroke: var(--primaryColor);
+}
+#InputViewer_Container .grad1 {
+  stroke-width: 3;
+}
+#InputViewer_Container .grad2 {
+  stroke-width: 1;
+}
+#InputViewer_Container .grad3 {
+  stroke-width: 1;
+  opacity: 0.5;
+}
+#InputViewer_Container .inputPos {
+  fill: none;
+  stroke: white;
+  stroke-width: 3;
+}
+#InputViewer_Container .trimPos {
+  stroke: white;
+  stroke-width: 1;
+}
+#InputViewer_Container #RudderPanel .wheelBrakeBar .fg {
+  fill: orange;
+}
+#InputViewer_Container #RudderPanel .wheelBrakeBar .cap {
+  stroke: var(--primaryColor);
+  stroke-width: 1;
+}
+#InputViewer_Container #ThrottlePanel .throttleBar .fg {
+  fill: white;
+}
+#InputViewer_Container #ThrottlePanel .throttleBar .cap {
+  stroke: var(--primaryColor);
+  stroke-width: 0.5;
+}
+#InputViewer_Container #ThrottlePanel .throttleBar.propeller .fg {
+  fill: skyblue;
+}
+#InputViewer_Container #ThrottlePanel .throttleBar.mixture .fg {
+  fill: salmon;
+}
+#InputViewer_Container #ThrottlePanel #ThrottleBars > *,
+#InputViewer_Container #ThrottlePanel #ThrottleBordersV > *,
+#InputViewer_Container #ThrottlePanel #ThrottleBordersH > * {
+  display: none;
+}
+#InputViewer_Container #ThrottlePanel[data-mode=SingleEngine] #ThrottleBars,
+#InputViewer_Container #ThrottlePanel[data-mode=SingleEngine] #ThrottleBordersV {
+  transform: translate(-5px, 0);
+}
+#InputViewer_Container #ThrottlePanel[data-mode=SingleEngine] #ThrottleBar_1 {
+  display: inline;
+}
+#InputViewer_Container #ThrottlePanel[data-mode=SingleEngine] #ThrottleBordersV > *:nth-child(1) {
+  display: inline;
+}
+#InputViewer_Container #ThrottlePanel[data-mode=SingleEngine] #ThrottleBordersV > *:nth-child(2) {
+  display: inline;
+}
+#InputViewer_Container #ThrottlePanel[data-mode=SingleEngine] #ThrottleBordersH > *:nth-child(1) {
+  display: inline;
+}
+#InputViewer_Container #ThrottlePanel[data-mode=TwinEngine] #ThrottleBars,
+#InputViewer_Container #ThrottlePanel[data-mode=TwinEngine] #ThrottleBordersV {
+  transform: translate(-10px, 0);
+}
+#InputViewer_Container #ThrottlePanel[data-mode=TwinEngine] #ThrottleBar_1 {
+  display: inline;
+}
+#InputViewer_Container #ThrottlePanel[data-mode=TwinEngine] #ThrottleBordersV > *:nth-child(1) {
+  display: inline;
+}
+#InputViewer_Container #ThrottlePanel[data-mode=TwinEngine] #ThrottleBar_2 {
+  display: inline;
+}
+#InputViewer_Container #ThrottlePanel[data-mode=TwinEngine] #ThrottleBordersV > *:nth-child(2) {
+  display: inline;
+}
+#InputViewer_Container #ThrottlePanel[data-mode=TwinEngine] #ThrottleBordersV > *:nth-child(3) {
+  display: inline;
+}
+#InputViewer_Container #ThrottlePanel[data-mode=TwinEngine] #ThrottleBordersH > *:nth-child(2) {
+  display: inline;
+}
+#InputViewer_Container #ThrottlePanel[data-mode=ThreeEngine] #ThrottleBars,
+#InputViewer_Container #ThrottlePanel[data-mode=ThreeEngine] #ThrottleBordersV {
+  transform: translate(-15px, 0);
+}
+#InputViewer_Container #ThrottlePanel[data-mode=ThreeEngine] #ThrottleBar_1 {
+  display: inline;
+}
+#InputViewer_Container #ThrottlePanel[data-mode=ThreeEngine] #ThrottleBordersV > *:nth-child(1) {
+  display: inline;
+}
+#InputViewer_Container #ThrottlePanel[data-mode=ThreeEngine] #ThrottleBar_2 {
+  display: inline;
+}
+#InputViewer_Container #ThrottlePanel[data-mode=ThreeEngine] #ThrottleBordersV > *:nth-child(2) {
+  display: inline;
+}
+#InputViewer_Container #ThrottlePanel[data-mode=ThreeEngine] #ThrottleBar_3 {
+  display: inline;
+}
+#InputViewer_Container #ThrottlePanel[data-mode=ThreeEngine] #ThrottleBordersV > *:nth-child(3) {
+  display: inline;
+}
+#InputViewer_Container #ThrottlePanel[data-mode=ThreeEngine] #ThrottleBordersV > *:nth-child(4) {
+  display: inline;
+}
+#InputViewer_Container #ThrottlePanel[data-mode=ThreeEngine] #ThrottleBordersH > *:nth-child(3) {
+  display: inline;
+}
+#InputViewer_Container #ThrottlePanel[data-mode=FourEngine] #ThrottleBars,
+#InputViewer_Container #ThrottlePanel[data-mode=FourEngine] #ThrottleBordersV {
+  transform: translate(-20px, 0);
+}
+#InputViewer_Container #ThrottlePanel[data-mode=FourEngine] #ThrottleBar_1 {
+  display: inline;
+}
+#InputViewer_Container #ThrottlePanel[data-mode=FourEngine] #ThrottleBordersV > *:nth-child(1) {
+  display: inline;
+}
+#InputViewer_Container #ThrottlePanel[data-mode=FourEngine] #ThrottleBar_2 {
+  display: inline;
+}
+#InputViewer_Container #ThrottlePanel[data-mode=FourEngine] #ThrottleBordersV > *:nth-child(2) {
+  display: inline;
+}
+#InputViewer_Container #ThrottlePanel[data-mode=FourEngine] #ThrottleBar_3 {
+  display: inline;
+}
+#InputViewer_Container #ThrottlePanel[data-mode=FourEngine] #ThrottleBordersV > *:nth-child(3) {
+  display: inline;
+}
+#InputViewer_Container #ThrottlePanel[data-mode=FourEngine] #ThrottleBar_4 {
+  display: inline;
+}
+#InputViewer_Container #ThrottlePanel[data-mode=FourEngine] #ThrottleBordersV > *:nth-child(4) {
+  display: inline;
+}
+#InputViewer_Container #ThrottlePanel[data-mode=FourEngine] #ThrottleBordersV > *:nth-child(5) {
+  display: inline;
+}
+#InputViewer_Container #ThrottlePanel[data-mode=FourEngine] #ThrottleBordersH > *:nth-child(4) {
+  display: inline;
+}
+#InputViewer_Container #ThrottlePanel[data-mode=PropMix] #ThrottleBars,
+#InputViewer_Container #ThrottlePanel[data-mode=PropMix] #ThrottleBordersV {
+  transform: translate(-15px, 0);
+}
+#InputViewer_Container #ThrottlePanel[data-mode=PropMix] #ThrottleBar_1,
+#InputViewer_Container #ThrottlePanel[data-mode=PropMix] #PropellerBar_1,
+#InputViewer_Container #ThrottlePanel[data-mode=PropMix] #MixtureBar_1 {
+  display: inline;
+}
+#InputViewer_Container #ThrottlePanel[data-mode=PropMix] #ThrottleBordersV > *:nth-child(1) {
+  display: inline;
+}
+#InputViewer_Container #ThrottlePanel[data-mode=PropMix] #ThrottleBordersV > *:nth-child(2) {
+  display: inline;
+}
+#InputViewer_Container #ThrottlePanel[data-mode=PropMix] #ThrottleBordersV > *:nth-child(3) {
+  display: inline;
+}
+#InputViewer_Container #ThrottlePanel[data-mode=PropMix] #ThrottleBordersV > *:nth-child(4) {
+  display: inline;
+}
+#InputViewer_Container #ThrottlePanel[data-mode=PropMix] #ThrottleBordersH > *:nth-child(3) {
+  display: inline;
+}

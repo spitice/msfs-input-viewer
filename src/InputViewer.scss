@@ -1,0 +1,245 @@
+
+@use "./styles/utils" as *;
+
+html, body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+#DevOverlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 999;
+    pointer-events: none;
+
+    > .error {
+        background-color: crimson;
+    }
+}
+
+#InputViewer {
+    #InputViewer_Container {
+        overflow: hidden;
+        // --headerHeight: #{scaled(87)};
+
+        // --containerWidth: calc(100vw - var(--contentMargin) * 2);
+        // --containerHeight: calc(100vh - var(--contentMargin) * 2 - var(--headerHeight));
+
+        // We substitute this var from JS since MSFS/CoherentGT's CSS doesn't support `min()` function yet.
+        // --widget-aspect-ratio: calc(280 / 260);
+        // --widgetWidth: min(var(--containerWidth), calc(var(--containerHeight) * var(--widget-aspect-ratio)));
+        --widgetWidth: 100px;  // placeholder
+
+        --panelDim: calc(var(--widgetWidth) * (220 / 280));
+        --throttlePanelWidth: calc(var(--panelDim) * (60 / 220));
+        --rudderPanelHeight:  calc(var(--panelDim) * (40 / 220));
+
+        position: absolute;
+
+        width: var(--containerWidth);
+        height: var(--containerHeight);
+
+        display: grid;
+
+        grid-template-columns: var(--throttlePanelWidth) var(--panelDim);
+        grid-template-rows: var(--panelDim) var(--rudderPanelHeight);
+        grid-template-areas:
+            "throttle stick"
+            "config rudder";
+        justify-content: space-evenly;  // x-axis
+        align-content: center;          // y-axis
+
+        background-color: rgba(0, 0, 0, 0.1);
+        // background-color: blue;
+
+        #ConfigPanel {
+            grid-area: config;
+        }
+        #StickPanel {
+            grid-area: stick;
+        }
+        #RudderPanel {
+            grid-area: rudder;
+        }
+        #ThrottlePanel {
+            grid-area: throttle;
+        }
+    }
+}
+
+#ConfigPanel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+toggle-button#TogglePropMix {    
+    .title {
+        margin: 0;
+    }
+
+    @function handleOffset($factor) {
+        // More factor, more left
+        @return var(--leftPos, #{scaled(56 - 12 * $factor)});
+    }
+
+    icon-element {
+        position: absolute;
+
+        top: scaled(2);
+        width: scaled(36);
+        height: scaled(36);
+
+        transition: basic-transition(left, opacity);
+
+        &#PropellerIcon {
+            left: handleOffset(1.15);  // Add 0.15 to move it to left slightly
+        }
+        &#MixtureIcon {
+            left: handleOffset(0);
+        }
+    }
+
+    .ToggleButton .toggleButtonWrapper .toggleButton .state {
+        left: handleOffset(2);
+        transition: basic-transition(left, background-color);
+    }
+
+    &:not(.off) {
+        .ToggleButton .toggleButtonWrapper .toggleButton .state {
+            background-color: #4F4F4F;
+        }
+    }
+
+    &.off {
+        icon-element {
+            opacity: 0;
+        }
+    }
+}
+
+#InputViewer_Container {
+    .grad1, .grad2, .grad3 {
+        fill: none;
+        stroke: var(--primaryColor);
+    }
+    .grad1 {
+        stroke-width: 3;
+    }
+    .grad2 {
+        stroke-width: 1;
+    }
+    .grad3 {
+        stroke-width: 1;
+        opacity: 0.5;
+    }
+
+    .inputPos {
+        fill: none;
+        stroke: white;
+        stroke-width: 3;
+    }
+    .trimPos {
+        stroke: white;
+        stroke-width: 1;
+    }
+
+    #RudderPanel {
+        .wheelBrakeBar {
+            .fg {
+                fill: orange;
+            }
+            .cap {
+                stroke: var(--primaryColor);
+                stroke-width: 1;
+            }
+        }
+    }
+
+    #ThrottlePanel {
+        .throttleBar {
+            .fg {
+                fill: white;
+            }
+            .cap {
+                stroke: var(--primaryColor);
+                stroke-width: 0.5;  // Compensates x2 scaling in y-axis
+            }
+
+            &.propeller {
+                .fg {
+                    fill: skyblue;
+                }
+            }
+            &.mixture {
+                .fg {
+                    fill: salmon;
+                }
+            }
+        }
+
+        #ThrottleBars,
+        #ThrottleBordersV,
+        #ThrottleBordersH {
+            & > * {
+                display: none;
+            }
+        }
+
+        @mixin showThrottleBars($n, $is-prop-mixture: false) {
+            // Translate
+            #ThrottleBars,
+            #ThrottleBordersV {
+                transform: translate($n * -5px, 0);
+            }
+
+            // Toggle visibility
+            @for $i from 1 through $n {
+                @if $is-prop-mixture {
+                    @if $i == 1 {
+                        #ThrottleBar_#{$i},
+                        #PropellerBar_#{$i},
+                        #MixtureBar_#{$i} {
+                            display: inline;
+                        }
+                    }
+                } @else {
+                    #ThrottleBar_#{$i} {
+                        display: inline;
+                    }
+                }
+
+                #ThrottleBordersV > *:nth-child(#{$i}) {
+                    display: inline;
+                }
+            }
+            #ThrottleBordersV > *:nth-child(#{$n + 1}) {
+                display: inline;
+            }
+            #ThrottleBordersH > *:nth-child(#{$n}) {
+                display: inline;
+            }
+        }
+
+        &[data-mode=SingleEngine] {
+            @include showThrottleBars(1);
+        }
+        &[data-mode=TwinEngine] {
+            @include showThrottleBars(2);
+        }
+        &[data-mode=ThreeEngine] {
+            @include showThrottleBars(3);
+        }
+        &[data-mode=FourEngine] {
+            @include showThrottleBars(4);
+        }
+        &[data-mode=PropMix] {
+            @include showThrottleBars(3, true);
+        }
+    }
+}

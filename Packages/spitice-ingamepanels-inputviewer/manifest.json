@@ -1,0 +1,15 @@
+{
+  "dependencies": [],
+  "content_type": "MISC",
+  "title": "Input Viewer",
+  "manufacturer": "",
+  "creator": "Spitice",
+  "package_version": "1.0.0",
+  "minimum_game_version": "1.15.10",
+  "release_notes": {
+    "neutral": {
+      "LastUpdate": "",
+      "OlderHistory": ""
+    }
+  }
+}

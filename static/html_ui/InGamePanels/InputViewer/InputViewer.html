@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+
+    <!-- <script src="http://localhost:9222/scripts/launcher.js" data-origin="debugger"></script> -->
+
+    <link rel="stylesheet" href="/SCSS/common.css" />
+    <link rel="stylesheet" href="./InputViewer.css" />
+
+    <script type="text/javascript" src="/JS/coherent.js"></script>
+    <script type="text/javascript" src="/JS/common.js"></script>
+    <script type="text/javascript" src="/JS/dataStorage.js"></script>
+    <script type="text/javascript" src="/JS/buttons.js"></script>
+    <script type="text/javascript" src="/JS/Services/ToolBarPanels.js"></script>
+    <script type="text/javascript" src="/Pages/VCockpit/Instruments/Shared/BaseInstrument.js"></script>
+    <script type="text/javascript" src="/JS/SimVar.js"></script>
+
+    <link rel="import" href="/templates/NewPushButton/NewPushButton.html" />
+    <link rel="import" href="/templates/ToggleButton/toggleButton.html" />
+    <link rel="import" href="/templates/tabMenu/tabMenu.html" />
+    <link rel="import" href="/templates/ingameUi/ingameUi.html" />
+    <link rel="import" href="/templates/ingameUiHeader/ingameUiHeader.html" />
+    <link rel="import" href="/templates/NewListButton/NewListButton.html" />
+    <link rel="import" href="/templates/ToggleButton/ToggleButton.html" />
+
+    <!-- <script type="text/javascript" src="/JS/debug.js"></script> -->
+    <script type="text/javascript" src="InputViewer.js"></script>
+</head>
+
+<body id="InputViewer" class="border-box">
+    <ingamepanel-input-viewer>
+        <ingame-ui id="InputViewer_Frame" panel-id="PANEL_INPUT_VIEWER" class="ingameUiFrame panelInvisible" title="" content-fit="true" min-width="40" resize="x">
+            <div id="DevOverlay">
+                <div class="error"></div>
+                <div class="info"></div>
+            </div>
+            <div id="InputViewer_Container">
+                <div id="ConfigPanel">
+                    <toggle-button id="TogglePropMix" class="noTitle"></toggle-button>
+                </div>
+
+                <div id="StickPanel">
+                    <svg width="100%" height="100%" viewBox="-110 -110 220 220" xmlns="http://www.w3.org/2000/svg">
+                        <g class="grad2">
+                            <rect x="-100" y="-100" width="200" height="200" />
+                            <line x1="0" y1="-100" x2="0" y2="100" />
+                            <line x1="-100" y1="0" x2="100" y2="0" />
+                        </g>
+                        <g class="grad1">
+                            <line x1="-100" y1="-10" x2="-100" y2="10" />
+                            <line x1="100" y1="-10" x2="100" y2="10" />
+                            <line x1="-10" y1="-100" x2="10" y2="-100" />
+                            <line x1="-10" y1="100" x2="10" y2="100" />
+                        </g>
+                        <g class="grad3">
+                            <line x1="-50" y1="-5" x2="-50" y2="5" />
+                            <line x1="50" y1="-5" x2="50" y2="5" />
+                            <line x1="-5" y1="-50" x2="5" y2="-50" />
+                            <line x1="-5" y1="50" x2="5" y2="50" />
+                        </g>
+                        
+                        <g id="StickInputPos" class="inputPos" transform="translate(35, 60)">
+                            <rect transform="rotate(45)" x="-3" y="-3" width="6" height="6" />
+                        </g>
+                        <g id="StickTrimPos" class="trimPos" transform="translate(0, 20)">
+                            <line x1="-3" y1="-3" x2="3" y2="3" />
+                            <line x1="3" y1="-3" x2="-3" y2="3" />
+                        </g>
+                    </svg>
+                </div>
+                <div id="RudderPanel">
+                    <svg width="100%" height="100%" viewBox="-110 -20 220 40" xmlns="http://www.w3.org/2000/svg">
+                        <g>
+                            <g id="WheelBrakeBar_Left" class="wheelBrakeBar" transform="translate(-100, 0)">
+                                <rect class="fg" x="0" y="-3" width="70" height="6" />
+                                <line class="cap" x1="0" y1="-3" x2="0" y2="3" transform="translate(70, 0)" />
+                            </g>
+                            <g id="WheelBrakeBar_Right" class="wheelBrakeBar" transform="translate(100, 0) scale(-1, 1)">
+                                <rect class="fg" x="0" y="-3" width="60" height="6" />
+                                <line class="cap" x1="0" y1="-3" x2="0" y2="3" transform="translate(60, 0)" />
+                            </g>
+                        </g>
+                    
+                        <g class="grad2">
+                            <line x1="0" y1="-7" x2="0" y2="7" />
+                            <line x1="-100" y1="0" x2="100" y2="0" />
+                        </g>
+                        <g class="grad1">
+                            <line x1="-100" y1="-10" x2="-100" y2="10" />
+                            <line x1="100" y1="-10" x2="100" y2="10" />
+                        </g>
+                        <g class="grad3">
+                            <line x1="-50" y1="-5" x2="-50" y2="5" />
+                            <line x1="50" y1="-5" x2="50" y2="5" />
+                        </g>
+                        
+                        <g id="RudderInputPos" class="inputPos" transform="translate(35, 0)">
+                            <rect transform="rotate(45)" x="-3" y="-3" width="6" height="6" />
+                        </g>
+                        <g id="RudderTrimPos" class="trimPos" transform="translate(0, 0)">
+                            <line x1="-3" y1="-3" x2="3" y2="3" />
+                            <line x1="3" y1="-3" x2="-3" y2="3" />
+                        </g>
+                    </svg>
+                </div>
+                <div id="ThrottlePanel" data-mode="PropMix">
+                    <svg width="100%" height="100%" viewBox="-30 -110 60 220" xmlns="http://www.w3.org/2000/svg">
+                        <g id="ThrottleBars">
+                            <g id="ThrottleBar_1" class="throttleBar" transform="translate(0, 100) scale(1, -2)">
+                                <rect class="fg" x="0" y="0" width="10" height="55" />
+                                <line class="cap" x1="0" y1="0" x2="10" y2="0" transform="translate(0, 55)" />
+                            </g>
+                            <g id="ThrottleBar_2" class="throttleBar" transform="translate(10, 100) scale(1, -2)">
+                                <rect class="fg" x="0" y="0" width="10" height="65" />
+                                <line class="cap" x1="0" y1="0" x2="10" y2="0" transform="translate(0, 65)" />
+                            </g>
+                            <g id="ThrottleBar_3" class="throttleBar" transform="translate(20, 100) scale(1, -2)">
+                                <rect class="fg" x="0" y="0" width="10" height="75" />
+                                <line class="cap" x1="0" y1="0" x2="10" y2="0" transform="translate(0, 75)" />
+                            </g>
+                            <g id="ThrottleBar_4" class="throttleBar" transform="translate(30, 100) scale(1, -2)">
+                                <rect class="fg" x="0" y="0" width="10" height="85" />
+                                <line class="cap" x1="0" y1="0" x2="10" y2="0" transform="translate(0, 85)" />
+                            </g>
+                            <g id="PropellerBar_1" class="throttleBar propeller" transform="translate(10, 100) scale(1, -2)">
+                                <rect class="fg" x="0" y="0" width="10" height="65" />
+                                <line class="cap" x1="0" y1="0" x2="10" y2="0" transform="translate(0, 65)" />
+                            </g>
+                            <g id="MixtureBar_1" class="throttleBar mixture" transform="translate(20, 100) scale(1, -2)">
+                                <rect class="fg" x="0" y="0" width="10" height="75" />
+                                <line class="cap" x1="0" y1="0" x2="10" y2="0" transform="translate(0, 75)" />
+                            </g>
+                        </g>
+                        <g id="ThrottleBordersV" class="grad3">
+                            <line x1="0" y1="-100" x2="0" y2="100" />
+                            <line x1="10" y1="-100" x2="10" y2="100" />
+                            <line x1="20" y1="-100" x2="20" y2="100" />
+                            <line x1="30" y1="-100" x2="30" y2="100" />
+                            <line x1="40" y1="-100" x2="40" y2="100" />
+                        </g>
+                        <g id="ThrottleBordersH" class="grad1">
+                            <g>
+                                <line x1="-8" y1="-100" x2="8" y2="-100" />
+                                <line x1="-8" y1="100" x2="8" y2="100" />
+                            </g>
+                            <g>
+                                <line x1="-13" y1="-100" x2="13" y2="-100" />
+                                <line x1="-13" y1="100" x2="13" y2="100" />
+                            </g>
+                            <g>
+                                <line x1="-18" y1="-100" x2="18" y2="-100" />
+                                <line x1="-18" y1="100" x2="18" y2="100" />
+                            </g>
+                            <g>
+                                <line x1="-23" y1="-100" x2="23" y2="-100" />
+                                <line x1="-23" y1="100" x2="23" y2="100" />
+                            </g>
+                        </g>
+                        
+                        <g class="grad2">
+                            <line x1="-20" y1="-100" x2="20" y2="-100" />
+                            <line x1="-20" y1="100" x2="20" y2="100" />
+                    
+                            <line x1="-20" y1="0" x2="20" y2="0" />
+                        </g>
+                    </svg>
+                </div>
+            </div>
+        </ingame-ui>
+    </ingamepanel-input-viewer>
+</body>
+</html>
