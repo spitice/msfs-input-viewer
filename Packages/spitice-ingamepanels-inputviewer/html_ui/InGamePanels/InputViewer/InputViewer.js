@@ -305,7 +305,6 @@ var exports = __webpack_exports__;
 
 /// <reference path="./types/msfs.d.ts" />
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const utils_1 = __webpack_require__(1);
 const inputHandler_1 = __webpack_require__(2);
 const makePropMixToggleButton_1 = __webpack_require__(5);
 __webpack_require__(4);
@@ -314,84 +313,7 @@ class InputViewerElement extends TemplateElement {
         super();
         this._isConnected = false;
         this._inputHandlers = [];
-        this._safeConnectedCallback = utils_1.safeCall(() => {
-            this._isConnected = true;
-            const elFrame = document.getElementById("InputViewer_Frame");
-            const find = (id) => {
-                const query = "#" + id;
-                const el = elFrame.querySelector(query);
-                if (!el) {
-                    throw new Error(query + " not found");
-                }
-                return el;
-            };
-            const elCont = find("InputViewer_Container");
-            const elThrottlePanel = find("ThrottlePanel");
-            const elOpenConf = find("OpenConfig");
-            const elConfCont = find("ConfigPopup_Container");
-            const elConfClose = find("Config_Close");
-            const elConfScroll = find("Config_ScrollCont");
-            const elConfNumericDisp = find("Config_NumericDisp");
-            const elConfPropMix = find("Config_TogglePropMix");
-            this._el = {
-                frame: elFrame,
-                cont: elCont,
-            };
-            elOpenConf.addEventListener("OnValidate", e => {
-                // Open the config popup
-                elConfCont.classList.remove("hide");
-                elConfScroll.delayedUpdateSizes();
-            });
-            elConfClose.addEventListener("OnValidate", e => {
-                // Close the config popup
-                elConfCont.classList.add("hide");
-            });
-            const engineHandler = new inputHandler_1.EngineHandler(elThrottlePanel);
-            makePropMixToggleButton_1.makePropMixToggleButton(elConfPropMix);
-            elConfPropMix.addEventListener("OnValidate", e => {
-                const toggle = e.target;
-                engineHandler.isPropMixEnabled = toggle.getValue();
-            });
-            elConfNumericDisp.addEventListener("OnValidate", e => {
-                const input = e.target;
-                console.log("CHOICE: ", input.currentValue, input.choices[input.currentValue]);
-            });
-            // Populate input handlers
-            this._inputHandlers = [
-                new inputHandler_1.StickHandler(find("StickInputPos"), ["AILERON POSITION", "ELEVATOR POSITION"], "position"),
-                new inputHandler_1.StickHandler(find("StickTrimPos"), ["AILERON TRIM PCT", "ELEVATOR TRIM PCT"], "percent over 100"),
-                new inputHandler_1.RudderHandler(find("RudderInputPos"), "RUDDER POSITION", "position"),
-                new inputHandler_1.RudderHandler(find("RudderTrimPos"), "RUDDER TRIM PCT", "percent over 100"),
-                new inputHandler_1.HBarHandler(find("WheelBrakeBar_Left"), "BRAKE LEFT POSITION"),
-                new inputHandler_1.HBarHandler(find("WheelBrakeBar_Right"), "BRAKE RIGHT POSITION"),
-                new inputHandler_1.VBarHandler(find("ThrottleBar_1"), "GENERAL ENG THROTTLE LEVER POSITION:1"),
-                new inputHandler_1.VBarHandler(find("ThrottleBar_2"), "GENERAL ENG THROTTLE LEVER POSITION:2"),
-                new inputHandler_1.VBarHandler(find("ThrottleBar_3"), "GENERAL ENG THROTTLE LEVER POSITION:3"),
-                new inputHandler_1.VBarHandler(find("ThrottleBar_4"), "GENERAL ENG THROTTLE LEVER POSITION:4"),
-                new inputHandler_1.VBarHandler(find("PropellerBar_1"), "GENERAL ENG PROPELLER LEVER POSITION:1"),
-                new inputHandler_1.VBarHandler(find("MixtureBar_1"), "GENERAL ENG MIXTURE LEVER POSITION:1"),
-                engineHandler,
-            ];
-            // Set up update loop
-            const updateLoop = () => {
-                if (!this._isConnected) {
-                    return;
-                }
-                this._onUpdate();
-                requestAnimationFrame(updateLoop);
-            };
-            requestAnimationFrame(updateLoop);
-            window.addEventListener("resize", this._onResize);
-            // When you close an externalized panel, "resize" event will be emitted
-            // before ".extern" is removed from the ingameUi element so we need this
-            // listener to approproately update our widget dimension.
-            elFrame.addEventListener("ToggleExternPanel", this._onResize);
-        });
-        this._queueResize = () => {
-            // requestAnimationFrame( () => this._onResize() );
-            setTimeout(() => this._onResize(), 0.1);
-        };
-        this._onResize = utils_1.safeCall((e) => {
+        this._onResize = (e) => {
             // Calculate the dimensions of the widget
             //
             // Since the return value of `getBoundingClientRect` is not synchronized
@@ -419,23 +341,94 @@ class InputViewerElement extends TemplateElement {
             //     `Panel Height: ${panelHeight}\n` +
             //     `Widget Width: ${widgetWidth}`
             // );
-        });
-        this._onUpdate = utils_1.safeCall(() => {
-            if (!SimVar.IsReady()) {
-                return;
-            }
-            // Update all SimVar observers
-            this._inputHandlers.forEach(handler => handler.update());
-        });
+        };
     }
     connectedCallback() {
-        this._safeConnectedCallback();
+        this._isConnected = true;
+        const elFrame = document.getElementById("InputViewer_Frame");
+        const find = (id) => {
+            const query = "#" + id;
+            const el = elFrame.querySelector(query);
+            if (!el) {
+                throw new Error(query + " not found");
+            }
+            return el;
+        };
+        const elCont = find("InputViewer_Container");
+        const elThrottlePanel = find("ThrottlePanel");
+        const elOpenConf = find("OpenConfig");
+        const elConfCont = find("ConfigPopup_Container");
+        const elConfClose = find("Config_Close");
+        const elConfScroll = find("Config_ScrollCont");
+        const elConfNumericDisp = find("Config_NumericDisp");
+        const elConfPropMix = find("Config_TogglePropMix");
+        this._el = {
+            frame: elFrame,
+            cont: elCont,
+        };
+        elOpenConf.addEventListener("OnValidate", e => {
+            // Open the config popup
+            elConfCont.classList.remove("hide");
+            elConfScroll.delayedUpdateSizes();
+        });
+        elConfClose.addEventListener("OnValidate", e => {
+            // Close the config popup
+            elConfCont.classList.add("hide");
+        });
+        const engineHandler = new inputHandler_1.EngineHandler(elThrottlePanel);
+        makePropMixToggleButton_1.makePropMixToggleButton(elConfPropMix);
+        elConfPropMix.addEventListener("OnValidate", e => {
+            const toggle = e.target;
+            engineHandler.isPropMixEnabled = toggle.getValue();
+        });
+        elConfNumericDisp.addEventListener("OnValidate", e => {
+            const input = e.target;
+            console.log("CHOICE: ", input.currentValue, input.choices[input.currentValue]);
+        });
+        // Populate input handlers
+        this._inputHandlers = [
+            new inputHandler_1.StickHandler(find("StickInputPos"), ["AILERON POSITION", "ELEVATOR POSITION"], "position"),
+            new inputHandler_1.StickHandler(find("StickTrimPos"), ["AILERON TRIM PCT", "ELEVATOR TRIM PCT"], "percent over 100"),
+            new inputHandler_1.RudderHandler(find("RudderInputPos"), "RUDDER POSITION", "position"),
+            new inputHandler_1.RudderHandler(find("RudderTrimPos"), "RUDDER TRIM PCT", "percent over 100"),
+            new inputHandler_1.HBarHandler(find("WheelBrakeBar_Left"), "BRAKE LEFT POSITION"),
+            new inputHandler_1.HBarHandler(find("WheelBrakeBar_Right"), "BRAKE RIGHT POSITION"),
+            new inputHandler_1.VBarHandler(find("ThrottleBar_1"), "GENERAL ENG THROTTLE LEVER POSITION:1"),
+            new inputHandler_1.VBarHandler(find("ThrottleBar_2"), "GENERAL ENG THROTTLE LEVER POSITION:2"),
+            new inputHandler_1.VBarHandler(find("ThrottleBar_3"), "GENERAL ENG THROTTLE LEVER POSITION:3"),
+            new inputHandler_1.VBarHandler(find("ThrottleBar_4"), "GENERAL ENG THROTTLE LEVER POSITION:4"),
+            new inputHandler_1.VBarHandler(find("PropellerBar_1"), "GENERAL ENG PROPELLER LEVER POSITION:1"),
+            new inputHandler_1.VBarHandler(find("MixtureBar_1"), "GENERAL ENG MIXTURE LEVER POSITION:1"),
+            engineHandler,
+        ];
+        // Set up update loop
+        const updateLoop = () => {
+            if (!this._isConnected) {
+                return;
+            }
+            this._onUpdate();
+            requestAnimationFrame(updateLoop);
+        };
+        requestAnimationFrame(updateLoop);
+        // TODO: Use ToolBarListener for this handlers
+        window.addEventListener("resize", this._onResize);
+        // When you close an externalized panel, "resize" event will be emitted
+        // before ".extern" is removed from the ingameUi element so we need this
+        // listener to approproately update our widget dimension.
+        elFrame.addEventListener("ToggleExternPanel", this._onResize);
     }
     disconnectedCallback() {
         super.disconnectedCallback();
         this._el.frame.removeEventListener("ToggleExternPanel", this._onResize);
         window.removeEventListener("resize", this._onResize);
         this._isConnected = false;
+    }
+    _onUpdate() {
+        if (!SimVar.IsReady()) {
+            return;
+        }
+        // Update all SimVar observers
+        this._inputHandlers.forEach(handler => handler.update());
     }
 }
 window.customElements.define("ingamepanel-input-viewer", InputViewerElement);

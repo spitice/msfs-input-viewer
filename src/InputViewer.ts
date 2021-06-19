@@ -4,7 +4,6 @@
 import {
     appendDebugMsg,
     debugMsg,
-    safeCall,
 } from "./inputViewer/utils";
 import {
     EngineHandler,
@@ -34,10 +33,6 @@ class InputViewerElement extends TemplateElement implements IUIElement {
     }
 
     connectedCallback() {
-        this._safeConnectedCallback();
-    }
-     
-    _safeConnectedCallback = safeCall( () => {
         this._isConnected = true;
 
         const elFrame = document.getElementById( "InputViewer_Frame" )!;
@@ -116,12 +111,13 @@ class InputViewerElement extends TemplateElement implements IUIElement {
         };
         requestAnimationFrame( updateLoop );
 
+        // TODO: Use ToolBarListener for this handlers
         window.addEventListener( "resize", this._onResize );
         // When you close an externalized panel, "resize" event will be emitted
         // before ".extern" is removed from the ingameUi element so we need this
         // listener to approproately update our widget dimension.
         elFrame.addEventListener( "ToggleExternPanel", this._onResize );
-    } );
+    }
 
     disconnectedCallback() {
         super.disconnectedCallback();
@@ -132,12 +128,7 @@ class InputViewerElement extends TemplateElement implements IUIElement {
         this._isConnected = false;
     }
 
-    _queueResize = () => {
-        // requestAnimationFrame( () => this._onResize() );
-        setTimeout( () => this._onResize(), 0.1 );
-    }
-
-    _onResize = safeCall( ( e?: Event ) => {
+    _onResize = ( e?: Event ) => {
         // Calculate the dimensions of the widget
         //
         // Since the return value of `getBoundingClientRect` is not synchronized
@@ -175,16 +166,16 @@ class InputViewerElement extends TemplateElement implements IUIElement {
         //     `Panel Height: ${panelHeight}\n` +
         //     `Widget Width: ${widgetWidth}`
         // );
-    } );
+    };
 
-    _onUpdate = safeCall( () => {
+    _onUpdate() {
         if ( !SimVar.IsReady() ) {
             return;
         }
 
         // Update all SimVar observers
         this._inputHandlers.forEach( handler => handler.update() );
-    } );
+    }
 }
 
 window.customElements.define( "ingamepanel-input-viewer", InputViewerElement );
