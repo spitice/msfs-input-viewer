@@ -19,6 +19,53 @@ html, body {
   background-color: crimson;
 }
 
+#ConfigPopup_Container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  z-index: 100;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  font-weight: bold;
+}
+#ConfigPopup_Container #Config_ScrollCont {
+  flex: 1 1 auto;
+}
+#ConfigPopup_Container new-list-button {
+  --optionContentWidth: calc(var(--screenHeight) * (350px / 2160));
+}
+#ConfigPopup_Container .sectionTitle {
+  padding: calc(var(--screenHeight) * (16px / 2160)) calc(var(--screenHeight) * (16px / 2160)) calc(var(--screenHeight) * (8px / 2160));
+  font-weight: normal;
+}
+#ConfigPopup_Container .info {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  background-color: var(--backgroundColorPanel);
+}
+#ConfigPopup_Container .info > .icon {
+  flex: 0 0 calc(var(--screenHeight) * (96px / 2160));
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: var(--backgroundColorPanel);
+}
+#ConfigPopup_Container .info > .icon icon-element {
+  --width: calc(var(--screenHeight) * (96px / 2160));
+  --height: calc(var(--screenHeight) * (96px / 2160));
+}
+#ConfigPopup_Container .info > .description {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  overflow: hidden;
+  padding: calc(var(--screenHeight) * (12px / 2160));
+  font-weight: normal;
+}
+
 #InputViewer #InputViewer_Container {
   overflow: hidden;
   --widgetWidth: 100px;
@@ -36,7 +83,7 @@ html, body {
   align-content: center;
   background-color: rgba(0, 0, 0, 0.1);
 }
-#InputViewer #InputViewer_Container #ConfigPanel {
+#InputViewer #InputViewer_Container #OpenConfigPanel {
   grid-area: config;
 }
 #InputViewer #InputViewer_Container #StickPanel {
@@ -49,36 +96,37 @@ html, body {
   grid-area: throttle;
 }
 
-#ConfigPanel {
+#OpenConfigPanel {
   display: flex;
   justify-content: center;
   align-items: center;
 }
-
-toggle-button#TogglePropMix .title {
-  margin: 0;
+#OpenConfigPanel #OpenConfig {
+  --width: calc(var(--screenHeight) * (90px / 2160));
+  --height: calc(var(--screenHeight) * (60px / 2160));
 }
-toggle-button#TogglePropMix icon-element {
+
+toggle-button.togglePropMix icon-element {
   position: absolute;
   top: calc(var(--screenHeight) * (2px / 2160));
   width: calc(var(--screenHeight) * (36px / 2160));
   height: calc(var(--screenHeight) * (36px / 2160));
   transition: left var(--animationTime) var(--animationEffect) , opacity var(--animationTime) var(--animationEffect);
 }
-toggle-button#TogglePropMix icon-element#PropellerIcon {
+toggle-button.togglePropMix icon-element#PropellerIcon {
   left: var(--leftPos, calc(var(--screenHeight) * (42.2px / 2160)));
 }
-toggle-button#TogglePropMix icon-element#MixtureIcon {
+toggle-button.togglePropMix icon-element#MixtureIcon {
   left: var(--leftPos, calc(var(--screenHeight) * (56px / 2160)));
 }
-toggle-button#TogglePropMix .ToggleButton .toggleButtonWrapper .toggleButton .state {
+toggle-button.togglePropMix .ToggleButton .toggleButtonWrapper .toggleButton .state {
   left: var(--leftPos, calc(var(--screenHeight) * (32px / 2160)));
   transition: left var(--animationTime) var(--animationEffect) , background-color var(--animationTime) var(--animationEffect);
 }
-toggle-button#TogglePropMix:not(.off) .ToggleButton .toggleButtonWrapper .toggleButton .state {
+toggle-button.togglePropMix:not(.off) .ToggleButton .toggleButtonWrapper .toggleButton .state {
   background-color: #4F4F4F;
 }
-toggle-button#TogglePropMix.off icon-element {
+toggle-button.togglePropMix.off icon-element {
   opacity: 0;
 }
 

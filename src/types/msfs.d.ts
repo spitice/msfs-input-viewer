@@ -3,6 +3,11 @@ declare class TemplateElement extends HTMLElement {
     disconnectedCallback(): void;
 }
 
+declare class NewListButtonElement {
+    currentValue: number;
+    choices: string[];
+}
+
 interface IUIElement {
     connectedCallback(): void;
     disconnectedCallback?(): void;

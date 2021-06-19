@@ -5,4 +5,6 @@ node_modules
 dist
 _PackageInt
 
+*.js.map
+
 _copy-to-msfs.bat

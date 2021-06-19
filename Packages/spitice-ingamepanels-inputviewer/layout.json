@@ -6,6 +6,11 @@
       "date": 132658058902281847
     },
     {
+      "path": "html_ui/InGamePanels/InputViewer/images/config.svg",
+      "size": 1745,
+      "date": 132685435312841161
+    },
+    {
       "path": "html_ui/InGamePanels/InputViewer/images/mixture.svg",
       "size": 1218,
       "date": 132656434638825713
@@ -17,18 +22,23 @@
     },
     {
       "path": "html_ui/InGamePanels/InputViewer/InputViewer.css",
-      "size": 8535,
-      "date": 132660658061006682
+      "size": 9742,
+      "date": 132685419343620919
     },
     {
       "path": "html_ui/InGamePanels/InputViewer/InputViewer.html",
-      "size": 10253,
-      "date": 132660490983742768
+      "size": 11423,
+      "date": 132685419339670921
     },
     {
       "path": "html_ui/InGamePanels/InputViewer/InputViewer.js",
-      "size": 12646,
-      "date": 132660658061006682
+      "size": 16433,
+      "date": 132685419343620919
+    },
+    {
+      "path": "html_ui/InGamePanels/InputViewer/InputViewer.js.map",
+      "size": 18571,
+      "date": 132685419343620919
     },
     {
       "path": "html_ui/textures/menu/toolbar/ICON_TOOLBAR_INPUT_VIEWER.svg",
@@ -38,7 +48,7 @@
     {
       "path": "InGamePanels/InGamePanel_InputViewer.spb",
       "size": 687,
-      "date": 132660658394136698
+      "date": 132685421844988534
     }
   ]
 }

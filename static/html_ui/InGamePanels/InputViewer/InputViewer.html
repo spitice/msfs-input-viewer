@@ -4,8 +4,6 @@
     <title></title>
     <meta charset="utf-8" />
 
-    <!-- <script src="http://localhost:9222/scripts/launcher.js" data-origin="debugger"></script> -->
-
     <link rel="stylesheet" href="/SCSS/common.css" />
     <link rel="stylesheet" href="./InputViewer.css" />
 
@@ -24,8 +22,8 @@
     <link rel="import" href="/templates/ingameUiHeader/ingameUiHeader.html" />
     <link rel="import" href="/templates/NewListButton/NewListButton.html" />
     <link rel="import" href="/templates/ToggleButton/ToggleButton.html" />
+    <link rel="import" href="/templates/virtualScroll/virtualScroll.html" />
 
-    <!-- <script type="text/javascript" src="/JS/debug.js"></script> -->
     <script type="text/javascript" src="InputViewer.js"></script>
 </head>
 
@@ -36,9 +34,37 @@
                 <div class="error"></div>
                 <div class="info"></div>
             </div>
+            <div id="ConfigPopup_Container" class="hide">
+                <virtual-scroll id="Config_ScrollCont" direction="y" class="condensed">
+                    <div class="condensedPanel">
+                        <div class="sectionTitle">General</div>
+                        <new-list-button
+                            id="Config_NumericDisp"
+                            title="Numeric Display"
+                            choices="None,Simple,Verbose"
+                        ></new-list-button>
+                        <toggle-button title="Auto-hide Panel Frame"></toggle-button>
+
+                        <div class="sectionTitle">Aircraft</div>
+                        <toggle-button
+                            id="Config_TogglePropMix"
+                            title="Propeller/Mixture Bar"
+                        ></toggle-button>
+                        <div class="info">
+                            <div class="icon">
+                                <icon-element data-url="/icons/Warning.svg"></icon-element>
+                            </div>
+                            <div class="description">
+                                You can also toggle PROP/MIX bar by clicking on the throttle area.
+                            </div>
+                        </div>
+                    </div>
+                </virtual-scroll>
+                <image-button id="Config_Close" class="full-width" title="GO BACK" data-url="/icons/Arrows_buttonLEFT.svg"></new-push-button>
+            </div>
             <div id="InputViewer_Container">
-                <div id="ConfigPanel">
-                    <toggle-button id="TogglePropMix" class="noTitle"></toggle-button>
+                <div id="OpenConfigPanel">
+                    <icon-button id="OpenConfig" class="secondary" data-url="/InGamePanels/InputViewer/images/config.svg"></icon-button>
                 </div>
 
                 <div id="StickPanel">

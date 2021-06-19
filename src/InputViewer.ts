@@ -14,6 +14,7 @@ import {
     StickHandler,
     VBarHandler,
 } from "./inputViewer/inputHandler";
+import { makePropMixToggleButton } from "./inputViewer/makePropMixToggleButton";
 
 import "./InputViewer.scss";
 
@@ -40,48 +41,54 @@ class InputViewerElement extends TemplateElement implements IUIElement {
         this._isConnected = true;
 
         const elFrame = document.getElementById( "InputViewer_Frame" )!;
-        const elCont = document.getElementById( "InputViewer_Container" )!;
-        const elToggle = document.getElementById( "TogglePropMix" )!;
-        const elThrottlePanel = document.getElementById( "ThrottlePanel" )!;
+
+        const find = ( id: string ) => {
+            const query = "#" + id;
+            const el = elFrame.querySelector( query ) as HTMLElement;
+            if ( !el ) {
+                throw new Error( query + " not found" );
+            }
+            return el;
+        };
+
+        const elCont            = find( "InputViewer_Container" );
+        const elThrottlePanel   = find( "ThrottlePanel" );
+        const elOpenConf        = find( "OpenConfig" );
+        const elConfCont        = find( "ConfigPopup_Container" );
+        const elConfClose       = find( "Config_Close" );
+        const elConfScroll      = find( "Config_ScrollCont" );
+        const elConfNumericDisp = find( "Config_NumericDisp" );
+        const elConfPropMix     = find( "Config_TogglePropMix" );
 
         this._el = {
             frame: elFrame,
             cont: elCont,
         };
 
-        // Initialize the toggle switch
-        const engineHandler = new EngineHandler( elThrottlePanel );
-
-        elToggle.addEventListener( "created", e => {
-            const elToggleWrap = elToggle.querySelector( ".toggleButtonWrapper .toggleButton" )!;
-            const elState = elToggleWrap.querySelector( ".state" )!;
-
-            const createIcon = ( id: string, svg: string ) => {
-                const elIcon = document.createElement( "icon-element" );
-                elIcon.setAttribute( "id", id );
-                elIcon.setAttribute( "data-url", "/InGamePanels/InputViewer/images/" + svg );
-                elToggleWrap.insertBefore( elIcon, elState );
-            };
-
-            createIcon( "MixtureIcon", "mixture.svg" );
-            createIcon( "PropellerIcon", "propeller.svg" );
+        elOpenConf.addEventListener( "OnValidate", e => {
+            // Open the config popup
+            elConfCont.classList.remove( "hide" );
+            (elConfScroll as any).delayedUpdateSizes();
+        } );
+        elConfClose.addEventListener( "OnValidate", e => {
+            // Close the config popup
+            elConfCont.classList.add( "hide" );
         } );
 
-        elToggle.addEventListener( "OnValidate", e => {
+        const engineHandler = new EngineHandler( elThrottlePanel );
+
+        makePropMixToggleButton( elConfPropMix );
+        elConfPropMix.addEventListener( "OnValidate", e => {
             const toggle = e.target as any as { getValue: () => boolean };
             engineHandler.isPropMixEnabled = toggle.getValue();
         } );
 
-        // Populate input handlers
-        const find = ( id: string ) => {
-            const query = "#" + id;
-            const el = elCont.querySelector( query );
-            if ( !el ) {
-                throw new Error( query + " not found" );
-            }
-            return el;
-        }
+        elConfNumericDisp.addEventListener( "OnValidate", e => {
+            const input = e.target as any as NewListButtonElement;
+            console.log( "CHOICE: ", input.currentValue, input.choices[input.currentValue] );
+        } );
 
+        // Populate input handlers
         this._inputHandlers = [
             new StickHandler( find( "StickInputPos" ), ["AILERON POSITION", "ELEVATOR POSITION"], "position" ),
             new StickHandler( find( "StickTrimPos" ), ["AILERON TRIM PCT", "ELEVATOR TRIM PCT"], "percent over 100" ),

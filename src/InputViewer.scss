@@ -11,6 +11,8 @@ html, body {
 }
 
 #DevOverlay {
+    // We need keep this absolute to properly scale "ConfigPopup_Container"
+    // panel for now...
     position: absolute;
     width: 100%;
     height: 100%;
@@ -19,6 +21,72 @@ html, body {
 
     > .error {
         background-color: crimson;
+    }
+}
+
+#ConfigPopup_Container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
+    z-index: 100;
+
+    background-color: rgba(0, 0, 0, 0.5);
+
+    // flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+
+    font-weight: bold;
+
+    #Config_ScrollCont {
+        flex: 1 1 auto;
+    }
+
+    new-list-button {
+        // Make it slightly slim
+        --optionContentWidth: #{scaled(350)};  // 500 for .condensedPanel, 700 for default
+    }
+
+    .sectionTitle {
+        padding: scaled(16) scaled(16) scaled(8);
+
+        font-weight: normal;
+    }
+
+    .info {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        background-color: var(--backgroundColorPanel);
+
+        $size: 96;
+
+        & > .icon {
+            flex: 0 0 scaled($size);
+
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+
+            background-color: var(--backgroundColorPanel);
+
+            icon-element {
+                --width: #{scaled($size)};
+                --height: #{scaled($size)};
+            }
+        }
+
+        & > .description {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+
+            overflow: hidden;
+            padding: scaled(12);
+
+            font-weight: normal;
+        }
     }
 }
 
@@ -57,7 +125,7 @@ html, body {
         background-color: rgba(0, 0, 0, 0.1);
         // background-color: blue;
 
-        #ConfigPanel {
+        #OpenConfigPanel {
             grid-area: config;
         }
         #StickPanel {
@@ -72,17 +140,19 @@ html, body {
     }
 }
 
-#ConfigPanel {
+#OpenConfigPanel {
     display: flex;
     justify-content: center;
     align-items: center;
+
+    #OpenConfig {
+        // Default = scaled(60)
+        --width: #{scaled(90)};
+        --height: #{scaled(60)};
+    }
 }
 
-toggle-button#TogglePropMix {    
-    .title {
-        margin: 0;
-    }
-
+toggle-button.togglePropMix {  
     @function handleOffset($factor) {
         // More factor, more left
         @return var(--leftPos, #{scaled(56 - 12 * $factor)});
