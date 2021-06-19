@@ -7,20 +7,8 @@ const path = require("path");
 const FileManagerPlugin     = require("filemanager-webpack-plugin");
 const MiniCssExtractPlugin  = require("mini-css-extract-plugin");
 const PnpPlugin             = require("pnp-webpack-plugin");
-const TerserPlugin          = require("terser-webpack-plugin");
 
 const packageName = "spitice-ingamepanels-inputviewer";
-
-// Mitigating the type error
-/** @type {any} */
-const terserPlugin = new TerserPlugin({
-    terserOptions: {
-        mangle: false,
-        output: {
-            beautify: true,
-        },
-    },
-});
 
 /** @type {import("webpack").Configuration} */
 const webpackConfig = {
@@ -49,7 +37,7 @@ const webpackConfig = {
                 loader: "ts-loader",
                 options: {
                     compilerOptions: {
-                        // "sourceMap": true,
+                        "sourceMap": true,
                         // "declaration": false,
                     },
                 },
@@ -79,13 +67,6 @@ const webpackConfig = {
             }
         }),
     ],
-
-    optimization: {
-        minimize: true,
-        minimizer: [
-            terserPlugin,
-        ],
-    },
 
     output: {
         filename: "[name].js",

@@ -5,10 +5,10 @@
     "build": "run-s clean compile copy-static build-msfs",
     "build-msfs": "\"$MSFS_SDK/Tools/bin/fspackagetool.exe\" input-viewer.xml -nomirroring",
     "clean": "rimraf _PackageInt dist Packages/spitice-ingamepanels-inputviewer",
-    "compile": "webpack --config ./webpack.config.js",
+    "compile": "webpack --config ./webpack.prod.config.js",
     "copy-static": "cpx 'static/**/*' 'Packages/spitice-ingamepanels-inputviewer'",
     "watch": "run-p watch-static watch-webpack",
-    "watch-webpack": "webpack --watch --config ./webpack.config.js",
+    "watch-webpack": "webpack --watch --config ./webpack.dev.config.js",
     "watch-static": "cpx 'static/**/*' 'Packages/spitice-ingamepanels-inputviewer' --watch --no-initial --verbose"
   },
   "devDependencies": {
