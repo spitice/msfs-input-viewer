@@ -83,3 +83,59 @@ export function updateThrottlePanelMode( mode: ReturnType<typeof getThrottlePane
     UIElements.el.mainThrottlePanel.setAttribute( "data-mode", mode );
     console.log( "updateThrottlePanelMode(): mode = " + mode );
 }
+
+export function updateEnablePropMixBar( value: boolean ) {
+    const { confPropMix } = UIElements.el;
+    if ( confPropMix.getValue() != value ) {
+        confPropMix.setValue( value );
+    }
+}
+
+
+export namespace config {
+    export const NUMBER_DISPLAY_MODE    = "NUMBER_DISPLAY_MODE";
+    export const ENABLE_PROPMIX_BAR     = "ENABLE_PROPMIX_BAR";
+
+    const propMixAircrafts = [
+        "TT:ATCCOM.AC_MODEL B350.0.text",   // Beechcraft King Air 350i
+        "TT:ATCCOM.AC_MODEL_BE36.0.text",   // Bonanza G36
+        "TT:ATCCOM.AC_MODEL C152.0.text",   // Cessna 152
+        "TT:ATCCOM.AC_MODEL C172.0.text",   // Cessna Skyhawk G1000
+        "TT:ATCCOM.AC_MODEL C208.0.text",   // Cessna 208B Grand Caravan EX
+        "TT:ATCCOM.AC_MODEL_CC19.0.text",   // XCub
+        "TT:ATCCOM.AC_MODEL CP10.0.text",   // Murdy Cap 10C
+        "TT:ATCCOM.AC_MODEL_DR40.0.text",   // DR 400
+        "TT:ATCCOM.AC_MODEL E300.0.text",   // Extra 330
+        "TT:ATCCOM.AC_MODEL PTS2.0.text",   // Pitts
+    ];
+
+    const propMixAircraftMap: { [modelName: string]: boolean } = {};
+    propMixAircrafts.forEach( modelName => propMixAircraftMap[modelName] = true );
+    
+    const PANEL_NAME = "SPITICE_INPUTVIEWER";  // Used for generating storage keys
+    function configKey( name: string ) {
+        return PANEL_NAME + "." + name;
+    }
+    
+    export function getData( name: string ) {
+        const key = configKey( name );
+        const value = GetStoredData( key )!;
+        console.log( `[GetStoredData] ${key} = ${value}` );
+        return value;
+    }
+    
+    export function setData( name: string, value: string ) {
+        const key = configKey( name );
+        SetStoredData( key, value );
+        console.log( `[SetStoredData] ${key} = ${value}` );
+    }
+
+    export function getEnablePropMixBar( modelName: string ) {
+        let value = getData( ENABLE_PROPMIX_BAR + ":" + modelName );
+        if ( value === "" ) {
+            console.log( "[getEnablePropMixBar] Using the default value..." );
+            return propMixAircraftMap[modelName];
+        }
+        return value === "1";
+    }
+}

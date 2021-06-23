@@ -6,9 +6,18 @@ declare global {
         disconnectedCallback(): void;
     }
 
-    class NewListButtonElement {
+    class ButtonElement extends TemplateElement {
+
+    }
+
+    class NewListButtonElement extends ButtonElement {
         currentValue: number;
         choices: string[];
+    }
+
+    class ToggleButtonElement extends ButtonElement {
+        getValue(): boolean;
+        setValue( val: boolean ): void;
     }
 
     interface IUIElement {

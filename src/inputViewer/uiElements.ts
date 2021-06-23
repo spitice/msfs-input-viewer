@@ -26,5 +26,7 @@ export class UIElements {
         // numberVerbose: UIElementsNumberDisp;
 
         mainThrottlePanel: HTMLElement;
+
+        confPropMix: ToggleButtonElement;
     };
 }

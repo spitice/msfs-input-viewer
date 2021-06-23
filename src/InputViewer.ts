@@ -99,6 +99,7 @@ class InputViewerElement extends TemplateElement implements IUIElement {
                 mixture1:   findBar( "MixtureBar_1" ),
             },
             mainThrottlePanel: find( "ThrottlePanel" ),
+            confPropMix: elConfPropMix as any,
         };
 
         // Set up update loop
@@ -175,10 +176,7 @@ class InputViewerElement extends TemplateElement implements IUIElement {
     };
 
     _onStorageReady = ( e?: Event ) => {
-        console.log( "STORAGE READY" );
-
-        console.log( "type: " + SimVar.GetSimVarValue( "ATC TYPE" as any, "String" as any ) );
-        console.log( "Model: " + SimVar.GetSimVarValue( "ATC MODEL" as any, "String" as any ) );
+        store.dispatch( A.setStorageReady( true ) );
     };
 
     _onUpdate() {

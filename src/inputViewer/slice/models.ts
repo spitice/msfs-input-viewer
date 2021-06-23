@@ -27,8 +27,13 @@ export interface Config {
     enablePropMixBar: boolean;
 }
 
+export interface App {
+    isStorageReady: boolean;
+    isLoadingConfig: boolean;
+}
 
 export interface InputViewerState {
+    app: App;
     input: InputData;
     aircraft: AircraftData;
     config: Config;

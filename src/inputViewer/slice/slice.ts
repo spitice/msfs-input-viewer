@@ -14,6 +14,11 @@ import {
 const noop = () => {};
 
 const initialState: InputViewerState = {
+    app: {
+        isStorageReady: false,
+        isLoadingConfig: false,
+    },
+
     input: {
         aileron: 0,
         elevator: 0,
@@ -47,6 +52,13 @@ const inputViewerSlice = createSlice({
     name: "inputViewer",
     initialState,
     reducers: {
+        setStorageReady: ( state, { payload }: PA<boolean> ) => {
+            state.app.isStorageReady = payload;
+        },
+        setLoadingConfig: ( state, { payload }: PA<boolean> ) => {
+            state.app.isLoadingConfig = payload;
+        },
+
         setInput: ( state, { payload }: PA<InputData> ) => {
             state.input = payload;
         },
