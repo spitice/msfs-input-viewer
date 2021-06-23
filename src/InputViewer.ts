@@ -1,22 +1,18 @@
 
-/// <reference path="./types/msfs.d.ts" />
-
+import { store } from "./store";
 import {
     appendDebugMsg,
     debugMsg,
 } from "./inputViewer/utils";
-import {
-    EngineHandler,
-    HBarHandler,
-    InputHandler,
-    RudderHandler,
-    StickHandler,
-    VBarHandler,
-} from "./inputViewer/inputHandler";
 import { makePropMixToggleButton } from "./inputViewer/makePropMixToggleButton";
+import { inputViewerActions as A } from "./inputViewer/slice";
+import {
+    BarElements,
+    UIElements
+} from "./inputViewer/uiElements";
+
 
 import "./InputViewer.scss";
-
 
 class InputViewerElement extends TemplateElement implements IUIElement {
 
@@ -26,7 +22,6 @@ class InputViewerElement extends TemplateElement implements IUIElement {
         frame: HTMLElement,
         cont: HTMLElement,
     };
-    _inputHandlers: InputHandler<number>[] = [];
 
     constructor() {
         super();
@@ -46,8 +41,15 @@ class InputViewerElement extends TemplateElement implements IUIElement {
             return el;
         };
 
+        const findBar = ( id: string ): BarElements => {
+            const parent = find( id );
+            return {
+                fg: parent.querySelector( ".fg" )!,
+                cap: parent.querySelector( ".cap" )!,
+            };
+        };
+
         const elCont            = find( "InputViewer_Container" );
-        const elThrottlePanel   = find( "ThrottlePanel" );
         const elOpenConf        = find( "OpenConfig" );
         const elConfCont        = find( "ConfigPopup_Container" );
         const elConfClose       = find( "Config_Close" );
@@ -70,12 +72,10 @@ class InputViewerElement extends TemplateElement implements IUIElement {
             elConfCont.classList.add( "hide" );
         } );
 
-        const engineHandler = new EngineHandler( elThrottlePanel );
-
         makePropMixToggleButton( elConfPropMix );
         elConfPropMix.addEventListener( "OnValidate", e => {
             const toggle = e.target as any as { getValue: () => boolean };
-            engineHandler.isPropMixEnabled = toggle.getValue();
+            store.dispatch( A.setEnablePropMixBar( toggle.getValue() ) );
         } );
 
         elConfNumericDisp.addEventListener( "OnValidate", e => {
@@ -83,22 +83,23 @@ class InputViewerElement extends TemplateElement implements IUIElement {
             console.log( "CHOICE: ", input.currentValue, input.choices[input.currentValue] );
         } );
 
-        // Populate input handlers
-        this._inputHandlers = [
-            new StickHandler( find( "StickInputPos" ), ["AILERON POSITION", "ELEVATOR POSITION"], "position" ),
-            new StickHandler( find( "StickTrimPos" ), ["AILERON TRIM PCT", "ELEVATOR TRIM PCT"], "percent over 100" ),
-            new RudderHandler( find( "RudderInputPos" ), "RUDDER POSITION", "position" ),
-            new RudderHandler( find( "RudderTrimPos" ), "RUDDER TRIM PCT", "percent over 100" ),
-            new HBarHandler( find( "WheelBrakeBar_Left" ), "BRAKE LEFT POSITION" ),
-            new HBarHandler( find( "WheelBrakeBar_Right" ), "BRAKE RIGHT POSITION" ),
-            new VBarHandler( find( "ThrottleBar_1" ), "GENERAL ENG THROTTLE LEVER POSITION:1" ),
-            new VBarHandler( find( "ThrottleBar_2" ), "GENERAL ENG THROTTLE LEVER POSITION:2" ),
-            new VBarHandler( find( "ThrottleBar_3" ), "GENERAL ENG THROTTLE LEVER POSITION:3" ),
-            new VBarHandler( find( "ThrottleBar_4" ), "GENERAL ENG THROTTLE LEVER POSITION:4" ),
-            new VBarHandler( find( "PropellerBar_1" ), "GENERAL ENG PROPELLER LEVER POSITION:1" ),
-            new VBarHandler( find( "MixtureBar_1" ), "GENERAL ENG MIXTURE LEVER POSITION:1" ),
-            engineHandler,
-        ];
+        UIElements.el = {
+            main: {
+                stick:      find( "StickInputPos" ),
+                stickTrim:  find( "StickTrimPos" ),
+                rudder:     find( "RudderInputPos" ),
+                rudderTrim: find( "RudderTrimPos" ),
+                brakeLeft:  findBar( "WheelBrakeBar_Left" ),
+                brakeRight: findBar( "WheelBrakeBar_Right" ),
+                throttle1:  findBar( "ThrottleBar_1" ),
+                throttle2:  findBar( "ThrottleBar_2" ),
+                throttle3:  findBar( "ThrottleBar_3" ),
+                throttle4:  findBar( "ThrottleBar_4" ),
+                propeller1: findBar( "PropellerBar_1" ),
+                mixture1:   findBar( "MixtureBar_1" ),
+            },
+            mainThrottlePanel: find( "ThrottlePanel" ),
+        };
 
         // Set up update loop
         const updateLoop = () => {
@@ -117,13 +118,18 @@ class InputViewerElement extends TemplateElement implements IUIElement {
         // before ".extern" is removed from the ingameUi element so we need this
         // listener to approproately update our widget dimension.
         elFrame.addEventListener( "ToggleExternPanel", this._onResize );
+
+        document.addEventListener( "dataStorageReady", this._onStorageReady );
     }
 
     disconnectedCallback() {
         super.disconnectedCallback();
 
+        document.addEventListener( "dataStorageReady", this._onStorageReady );
         this._el.frame.removeEventListener( "ToggleExternPanel", this._onResize );
         window.removeEventListener( "resize", this._onResize );
+
+        UIElements.el = {} as any;
 
         this._isConnected = false;
     }
@@ -168,13 +174,18 @@ class InputViewerElement extends TemplateElement implements IUIElement {
         // );
     };
 
+    _onStorageReady = ( e?: Event ) => {
+        console.log( "STORAGE READY" );
+
+        console.log( "type: " + SimVar.GetSimVarValue( "ATC TYPE" as any, "String" as any ) );
+        console.log( "Model: " + SimVar.GetSimVarValue( "ATC MODEL" as any, "String" as any ) );
+    };
+
     _onUpdate() {
         if ( !SimVar.IsReady() ) {
             return;
         }
-
-        // Update all SimVar observers
-        this._inputHandlers.forEach( handler => handler.update() );
+        store.dispatch( A.fetchSimVar() );
     }
 }
 
