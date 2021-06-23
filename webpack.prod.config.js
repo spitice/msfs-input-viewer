@@ -12,7 +12,7 @@ const terserPlugin = new TerserPlugin({
     terserOptions: {
         mangle: false,
         output: {
-            beautify: true,
+            // beautify: true,
         },
     },
 });
@@ -20,6 +20,8 @@ const terserPlugin = new TerserPlugin({
 /** @type {import("webpack").Configuration} */
 const webpackConfig = {
     ...baseConfig,
+
+    mode: "production",
 
     optimization: {
         minimize: true,

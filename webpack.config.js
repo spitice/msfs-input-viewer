@@ -37,6 +37,7 @@ const webpackConfig = {
                 loader: "ts-loader",
                 options: {
                     compilerOptions: {
+                        "transpileOnly": true,
                         "sourceMap": true,
                         // "declaration": false,
                     },
