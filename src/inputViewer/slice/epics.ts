@@ -25,11 +25,9 @@ import { shallowEq } from "../utils";
 import {
     AilElevAxis,
     InputViewerState,
-    RudAxis,
-    SliderAxis,
+    SimVarAxisInput,
     StickInput,
     StickValues,
-    ThrottleAxis,
 } from "./models";
 import {
     config,
@@ -38,6 +36,10 @@ import {
     getThrottlePanelMode,
     updateEnablePropMixBar,
     updateHorizontalBar,
+    updateNumberDisplaySimple,
+    updateNumberDisplaySimpleSign,
+    updateNumberDisplayType,
+    updateNumberDisplayVerbose,
     updateRudder,
     updateStick,
     updateThrottlePanelMode,
@@ -91,24 +93,90 @@ const fetchSimVarInput: E = action$ => action$.pipe(
     map( () => A.setInput( getInputData() ) ),
 );
 
-function _makeUpdater<TAxis extends AilElevAxis | RudAxis | SliderAxis>(
+
+const forceUpdateAllInput: E = ( action$, state$ ) => action$.pipe(
+    filter( A.forceUpdateAllInputs.match ),
+    withLatestFrom( state$ ),
+    tap( ([ _, state ]) => {
+        const { input: d } = state;
+        
+        updateStick( "stick", [d.aileron, d.elevator] );
+        updateStick( "stickTrim", [d.aileronTrim, d.elevatorTrim] );
+        updateRudder( "rudder", d.rudder );
+        updateRudder( "rudderTrim", d.rudderTrim );
+        updateHorizontalBar( "brakeLeft", d.brakeLeft );
+        updateHorizontalBar( "brakeRight", d.brakeRight );
+        updateVerticalBar( "throttle1", d.throttle1 );
+        updateVerticalBar( "throttle2", d.throttle2 );
+        updateVerticalBar( "throttle3", d.throttle3 );
+        updateVerticalBar( "throttle4", d.throttle4 );
+        updateVerticalBar( "propeller1", d.propeller1 );
+        updateVerticalBar( "mixture1", d.mixture1 );
+
+        const updateNumberDisplay = ( key: SimVarAxisInput ) => {
+            const value = d[key];
+            updateNumberDisplayVerbose( key, value );
+            updateNumberDisplaySimple( key, value );
+            updateNumberDisplaySimpleSign( key, Math.sign( value ) );
+        };
+        updateNumberDisplay( "aileron" );
+        updateNumberDisplay( "aileronTrim" );
+        updateNumberDisplay( "elevator" );
+        updateNumberDisplay( "elevatorTrim" );
+        updateNumberDisplay( "rudder" );
+        updateNumberDisplay( "rudderTrim" );
+        updateNumberDisplay( "brakeLeft" );
+        updateNumberDisplay( "brakeRight" );
+        updateNumberDisplay( "throttle1" );
+        updateNumberDisplay( "throttle2" );
+        updateNumberDisplay( "throttle3" );
+        updateNumberDisplay( "throttle4" );
+        updateNumberDisplay( "propeller1" );
+        updateNumberDisplay( "mixture1" );
+    } ),
+    ignoreElements(),
+);
+
+function _makeUpdater<TAxis extends SimVarAxisInput>(
     onUpdate: ( key: TAxis, value: number ) => void
 ) {
-    return ( key: TAxis ): E => action$ => action$.pipe(
+    return ( key: TAxis ): E => ( action$, state$ ) => action$.pipe(
         filter( A.setInput.match ),
     
         pluck( "payload", key ),
         distinctUntilChanged(),
     
         // Update the main element
-        tap( value => onUpdate( key, value ) ),
-    
-        // TODO:Update the number display
-    
-        ignoreElements()
-    );
+        tap( value => onUpdate( key, value ) )
+
+    ).pipe(
+        // Update the number display
+        withLatestFrom( state$ ),
+        map( ([ value, state ]) => ({
+            value,
+            numberDisplayType: state.config.numberDisplayType,
+        }) ),
+        tap( ({ value, numberDisplayType }) => {
+            if ( numberDisplayType === "verbose" ) {
+                updateNumberDisplayVerbose( key, value );
+            } else if ( numberDisplayType === "simple" ) {
+                updateNumberDisplaySimple( key, value );
+            }
+        } )
+
+    ).pipe(
+        // Update the number display sign
+        filter( ({ numberDisplayType }) => numberDisplayType === "simple" ),
+        map( ({ value }) => Math.sign( value ) ),
+        distinctUntilChanged(),
+        tap( sign => {
+            updateNumberDisplaySimpleSign( key, sign );
+        } ),
+
+    ).pipe( ignoreElements() );
 }
 
+const makeAilElevUpdater = _makeUpdater( () => {} );
 const makeRudUpdater = _makeUpdater( updateRudder );
 const makeHBarUpdater = _makeUpdater( updateHorizontalBar );
 const makeVBarUpdater = _makeUpdater( updateVerticalBar );
@@ -145,9 +213,17 @@ const checkThrottlePanelMode: E = ( action$, state$ ) => action$.pipe(
     distinctUntilChanged(),
 
     // Update the throttle panel
-    tap( value => updateThrottlePanelMode( value  ) ),
+    tap( value => updateThrottlePanelMode( value ) ),
 
     ignoreElements()
+);
+
+const checkNumberDisplayType: E = action$ => action$.pipe(
+    filter( A.setNumberDisplayType.match ),
+    tap( ({ payload }) => {
+        updateNumberDisplayType( payload );
+    } ),
+    ignoreElements(),
 );
 
 const checkConfigEnablePropMixBar: E = action$ => action$.pipe(
@@ -186,8 +262,13 @@ const epics: E[] = [
     fetchSimVarInput,
 
     // Input updaters
+    forceUpdateAllInput,
     makeStickUpdater( "stick", ["aileron", "elevator"] ),
     makeStickUpdater( "stickTrim", ["aileronTrim", "elevatorTrim"] ),
+    makeAilElevUpdater( "aileron" ),
+    makeAilElevUpdater( "aileronTrim" ),
+    makeAilElevUpdater( "elevator" ),
+    makeAilElevUpdater( "elevatorTrim" ),
     makeRudUpdater( "rudder" ),
     makeRudUpdater( "rudderTrim" ),
     makeHBarUpdater( "brakeLeft" ),
@@ -201,6 +282,7 @@ const epics: E[] = [
 
     // Configuration handlers
     checkThrottlePanelMode,
+    checkNumberDisplayType,
     checkConfigEnablePropMixBar,
 ];
 

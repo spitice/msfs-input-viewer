@@ -31,7 +31,7 @@ html, body {
     min-height: 100%;
     z-index: 100;
 
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.7);
 
     // flex: 1 1 auto;
     display: flex;
@@ -88,6 +88,25 @@ html, body {
             font-weight: normal;
         }
     }
+}
+
+#NumberDisp_Verbose_Container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+
+    z-index: 50;
+    pointer-events: none;
+
+    background-color: var(--backgroundColorPanel);
+
+    .numberDisp {
+        font-size: calc(var(--fontSizeParagraph) * 0.75);
+    }
+}
+
+#NumberDisp_Simple_Container {
+    position: absolute;
 }
 
 #InputViewer {

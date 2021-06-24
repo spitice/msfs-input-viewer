@@ -8,7 +8,8 @@ import { makePropMixToggleButton } from "./inputViewer/makePropMixToggleButton";
 import { inputViewerActions as A } from "./inputViewer/slice";
 import {
     BarElements,
-    UIElements
+    NumberDisplayElements,
+    UIElements,
 } from "./inputViewer/uiElements";
 
 
@@ -49,6 +50,35 @@ class InputViewerElement extends TemplateElement implements IUIElement {
             };
         };
 
+        const findNumberDisplay = ( id: string ): NumberDisplayElements => {
+            const parent = find( id );
+            const findNum = ( className: string ) => {
+                const query = "." + className;
+                const el = parent.querySelector( `.${className} .value` ) as HTMLElement;
+                if ( !el ) {
+                    throw new Error( query + " not found" );
+                }
+                return el;
+            };
+
+            return {
+                aileron:        findNum( "aileron" ),
+                aileronTrim:    findNum( "aileronTrim" ),
+                elevator:       findNum( "elevator" ),
+                elevatorTrim:   findNum( "elevatorTrim" ),
+                rudder:         findNum( "rudder" ),
+                rudderTrim:     findNum( "rudderTrim" ),
+                brakeLeft:      findNum( "brakeLeft" ),
+                brakeRight:     findNum( "brakeRight" ),
+                throttle1:      findNum( "throttle1" ),
+                throttle2:      findNum( "throttle2" ),
+                throttle3:      findNum( "throttle3" ),
+                throttle4:      findNum( "throttle4" ),
+                propeller1:     findNum( "propeller1" ),
+                mixture1:       findNum( "mixture1" ),
+            };
+        };
+
         const elCont            = find( "InputViewer_Container" );
         const elOpenConf        = find( "OpenConfig" );
         const elConfCont        = find( "ConfigPopup_Container" );
@@ -80,7 +110,11 @@ class InputViewerElement extends TemplateElement implements IUIElement {
 
         elConfNumericDisp.addEventListener( "OnValidate", e => {
             const input = e.target as any as NewListButtonElement;
-            console.log( "CHOICE: ", input.currentValue, input.choices[input.currentValue] );
+            const choice = input.choices[input.currentValue];
+            console.log( "CHOICE: ", input.currentValue, choice );
+
+            store.dispatch( A.setNumberDisplayType( choice.toLowerCase() as any ) );
+            store.dispatch( A.forceUpdateAllInputs() );
         } );
 
         UIElements.el = {
@@ -98,7 +132,12 @@ class InputViewerElement extends TemplateElement implements IUIElement {
                 propeller1: findBar( "PropellerBar_1" ),
                 mixture1:   findBar( "MixtureBar_1" ),
             },
+            numberSimple: findNumberDisplay( "NumberDisp_Simple_Container" ),
+            numberVerbose: findNumberDisplay( "NumberDisp_Verbose_Container" ),
+
             mainThrottlePanel: find( "ThrottlePanel" ),
+            numberSimpleContainer: find( "NumberDisp_Simple_Container" ),
+            numberVerboseContainer: find( "NumberDisp_Verbose_Container" ),
             confPropMix: elConfPropMix as any,
         };
 

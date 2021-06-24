@@ -75,6 +75,7 @@ const inputViewerSlice = createSlice({
 
         // Epic triggers
         fetchSimVar: noop,
+        forceUpdateAllInputs: noop,
     },
 })
 

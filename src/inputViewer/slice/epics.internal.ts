@@ -5,7 +5,9 @@ import {
     AircraftData,
     BrakeAxis,
     InputData,
+    NumberDisplayType,
     RudAxis,
+    SimVarAxisInput,
     StickInput,
     StickValues,
     ThrottleAxis,
@@ -61,9 +63,38 @@ export function updateVerticalBar( key: ThrottleAxis, value: number ) {
     setTranslate( el.cap, 0, value );
 };
 
-// export function updateInnetText( el: HTMLElement, value: string ) {
-//     el.innerText = value;
-// }
+function updateInnerText( el: HTMLElement, value: string ) {
+    el.innerText = value;
+}
+
+export function updateNumberDisplayVerbose( key: SimVarAxisInput, value: number ) {
+    updateInnerText( UIElements.el.numberVerbose[key], value.toString() );
+}
+
+const trimAxis: SimVarAxisInput[] = [
+    "aileronTrim",
+    "elevatorTrim",
+    "rudderTrim",
+];
+
+export function simplifyNumber( key: SimVarAxisInput, value: number ) {
+    value = value * 100;
+    let fracDigits = 0;
+    if ( trimAxis.indexOf( key ) >= 0 ) {
+        if ( Math.abs( value ) < 0.95 && value !== 0 ) {
+            fracDigits = 1;
+        }
+    }
+    return value.toFixed( fracDigits );
+}
+
+export function updateNumberDisplaySimple( key: SimVarAxisInput, value: number ) {
+    updateInnerText( UIElements.el.numberSimple[key], simplifyNumber( key, value ) );
+}
+
+export function updateNumberDisplaySimpleSign( key: SimVarAxisInput, sign: number ) {
+    UIElements.el.numberSimple[key].classList.toggle( "zero", sign === 0 || sign === -0 );
+}
 
 export function getThrottlePanelMode( enablePropMixBar: boolean, numEngines: number ) {
     if ( enablePropMixBar ) {
@@ -82,6 +113,12 @@ export function getThrottlePanelMode( enablePropMixBar: boolean, numEngines: num
 export function updateThrottlePanelMode( mode: ReturnType<typeof getThrottlePanelMode> ) {
     UIElements.el.mainThrottlePanel.setAttribute( "data-mode", mode );
     console.log( "updateThrottlePanelMode(): mode = " + mode );
+}
+
+export function updateNumberDisplayType( type: NumberDisplayType ) {
+    const { el } = UIElements;
+    el.numberSimpleContainer.classList.toggle( "hide", type !== "simple" );
+    el.numberVerboseContainer.classList.toggle( "hide", type !== "verbose" );
 }
 
 export function updateEnablePropMixBar( value: boolean ) {

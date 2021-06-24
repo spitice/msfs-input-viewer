@@ -1,9 +1,9 @@
 
-//@TODO: Use Redux to avoid this pattern completely.
+// TODO: Use Redux to avoid this pattern completely.
 
 import {
-    AilElevAxis,
     RudAxis,
+    SimVarAxisInput,
     SliderAxis,
     StickInput,
 } from "./slice/models";
@@ -13,20 +13,19 @@ export interface BarElements {
     cap: HTMLElement;
 }
 
-type ElementsAilElev = {
-    [key in AilElevAxis]: HTMLElement
-};
 type Elements<T extends string> = Record<T, HTMLElement>;
 type Elements_Bar = Record<SliderAxis, BarElements>;
+export type NumberDisplayElements = Elements<SimVarAxisInput>;
 
 export class UIElements {
     static el: {
         main: Elements<StickInput> & Elements<RudAxis> & Elements_Bar;
-        // numberSimple: UIElementsNumberDisp;
-        // numberVerbose: UIElementsNumberDisp;
+        numberSimple: NumberDisplayElements;
+        numberVerbose: NumberDisplayElements;
 
         mainThrottlePanel: HTMLElement;
-
+        numberSimpleContainer: HTMLElement;
+        numberVerboseContainer: HTMLElement;
         confPropMix: ToggleButtonElement;
     };
 }
