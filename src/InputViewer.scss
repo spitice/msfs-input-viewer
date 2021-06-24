@@ -106,7 +106,92 @@ html, body {
 }
 
 #NumberDisp_Simple_Container {
-    position: absolute;
+    opacity: 0.8;
+    .bg {
+        .name {
+            fill: white;
+        }
+        .primary {
+            fill: #3E3E3E;
+        }
+        .secondary {
+            fill: #818181;
+        }
+        .aileronTip {
+            fill: #DA0000;
+        }
+        .elevatorTip {
+            fill: #00C200;
+        }
+        .rudderTip {
+            fill: #0000C2;
+        }
+        .brakeTip {
+            fill: #EEB000;
+        }
+        .propellerPrimary {
+            fill: #004DC7;
+        }
+        .mixturePrimary {
+            fill: #B1352A;
+        }
+    }
+    .label {
+        text {
+            font-size: 7px;
+            text-anchor: middle;
+            dominant-baseline: central;
+        }
+        .name {
+            font-weight: 800;
+            fill: rgba(0, 0, 0, 0.7);
+        }
+        .value {
+            fill: white;
+            .zero {
+                fill: rgba(255, 255, 255, 0.5);
+            }
+        }
+    }
+
+    .throttleContainer {
+        > g {
+            display: none;
+        }
+    }
+    &[data-mode=SingleEngine] {
+        .throttle1Container {
+            display: inline;
+        }
+    }
+    &[data-mode=TwinEngine] {
+        .throttle1Container,
+        .throttle2Container {
+            display: inline;
+        }
+    }
+    &[data-mode=ThreeEngine] {
+        .throttle1Container,
+        .throttle2Container,
+        .throttle3Container {
+            display: inline;
+        }
+    }
+    &[data-mode=FourEngine] {
+        .throttle1Container,
+        .throttle2Container,
+        .throttle3Container,
+        .throttle4Container {
+            display: inline;
+        }
+    }
+    &[data-mode=PropMix] {
+        .throttle1Container,
+        .propeller1Container,
+        .mixture1Container {
+            display: inline;
+        }
+    }
 }
 
 #InputViewer {

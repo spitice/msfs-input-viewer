@@ -79,7 +79,75 @@ html, body {
 }
 
 #NumberDisp_Simple_Container {
-  position: absolute;
+  opacity: 0.8;
+}
+#NumberDisp_Simple_Container .bg .name {
+  fill: white;
+}
+#NumberDisp_Simple_Container .bg .primary {
+  fill: #3E3E3E;
+}
+#NumberDisp_Simple_Container .bg .secondary {
+  fill: #818181;
+}
+#NumberDisp_Simple_Container .bg .aileronTip {
+  fill: #DA0000;
+}
+#NumberDisp_Simple_Container .bg .elevatorTip {
+  fill: #00C200;
+}
+#NumberDisp_Simple_Container .bg .rudderTip {
+  fill: #0000C2;
+}
+#NumberDisp_Simple_Container .bg .brakeTip {
+  fill: #EEB000;
+}
+#NumberDisp_Simple_Container .bg .propellerPrimary {
+  fill: #004DC7;
+}
+#NumberDisp_Simple_Container .bg .mixturePrimary {
+  fill: #B1352A;
+}
+#NumberDisp_Simple_Container .label text {
+  font-size: 7px;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+#NumberDisp_Simple_Container .label .name {
+  font-weight: 800;
+  fill: rgba(0, 0, 0, 0.7);
+}
+#NumberDisp_Simple_Container .label .value {
+  fill: white;
+}
+#NumberDisp_Simple_Container .label .value .zero {
+  fill: rgba(255, 255, 255, 0.5);
+}
+#NumberDisp_Simple_Container .throttleContainer > g {
+  display: none;
+}
+#NumberDisp_Simple_Container[data-mode=SingleEngine] .throttle1Container {
+  display: inline;
+}
+#NumberDisp_Simple_Container[data-mode=TwinEngine] .throttle1Container,
+#NumberDisp_Simple_Container[data-mode=TwinEngine] .throttle2Container {
+  display: inline;
+}
+#NumberDisp_Simple_Container[data-mode=ThreeEngine] .throttle1Container,
+#NumberDisp_Simple_Container[data-mode=ThreeEngine] .throttle2Container,
+#NumberDisp_Simple_Container[data-mode=ThreeEngine] .throttle3Container {
+  display: inline;
+}
+#NumberDisp_Simple_Container[data-mode=FourEngine] .throttle1Container,
+#NumberDisp_Simple_Container[data-mode=FourEngine] .throttle2Container,
+#NumberDisp_Simple_Container[data-mode=FourEngine] .throttle3Container,
+#NumberDisp_Simple_Container[data-mode=FourEngine] .throttle4Container {
+  display: inline;
+}
+#NumberDisp_Simple_Container[data-mode=PropMix] .throttle1Container,
+#NumberDisp_Simple_Container[data-mode=PropMix] .propeller1Container,
+#NumberDisp_Simple_Container[data-mode=PropMix] .mixture1Container {
+  display: inline;
 }
 
 #InputViewer #InputViewer_Container {

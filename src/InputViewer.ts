@@ -54,7 +54,7 @@ class InputViewerElement extends TemplateElement implements IUIElement {
             const parent = find( id );
             const findNum = ( className: string ) => {
                 const query = "." + className;
-                const el = parent.querySelector( `.${className} .value` ) as HTMLElement;
+                const el = parent.querySelector( `.numberDisp.${className} .value` ) as HTMLElement;
                 if ( !el ) {
                     throw new Error( query + " not found" );
                 }

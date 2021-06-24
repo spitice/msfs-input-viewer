@@ -63,12 +63,8 @@ export function updateVerticalBar( key: ThrottleAxis, value: number ) {
     setTranslate( el.cap, 0, value );
 };
 
-function updateInnerText( el: HTMLElement, value: string ) {
-    el.innerText = value;
-}
-
 export function updateNumberDisplayVerbose( key: SimVarAxisInput, value: number ) {
-    updateInnerText( UIElements.el.numberVerbose[key], value.toString() );
+    UIElements.el.numberVerbose[key].innerText = value.toString();
 }
 
 const trimAxis: SimVarAxisInput[] = [
@@ -89,7 +85,7 @@ export function simplifyNumber( key: SimVarAxisInput, value: number ) {
 }
 
 export function updateNumberDisplaySimple( key: SimVarAxisInput, value: number ) {
-    updateInnerText( UIElements.el.numberSimple[key], simplifyNumber( key, value ) );
+    UIElements.el.numberSimple[key].textContent = simplifyNumber( key, value );
 }
 
 export function updateNumberDisplaySimpleSign( key: SimVarAxisInput, sign: number ) {
@@ -111,8 +107,10 @@ export function getThrottlePanelMode( enablePropMixBar: boolean, numEngines: num
 }
 
 export function updateThrottlePanelMode( mode: ReturnType<typeof getThrottlePanelMode> ) {
-    UIElements.el.mainThrottlePanel.setAttribute( "data-mode", mode );
-    console.log( "updateThrottlePanelMode(): mode = " + mode );
+    const { el } = UIElements;
+    el.mainThrottlePanel.setAttribute( "data-mode", mode );
+    el.numberSimpleContainer.setAttribute( "data-mode", mode );
+    console.log( "[updateThrottlePanelMode()] mode: " + mode );
 }
 
 export function updateNumberDisplayType( type: NumberDisplayType ) {
