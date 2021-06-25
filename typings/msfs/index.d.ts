@@ -11,8 +11,16 @@ declare global {
     }
 
     class NewListButtonElement extends ButtonElement {
-        currentValue: number;
+        /**
+         * You should set the current choice via `setCurrentValue` otherwise the
+         * current selected index will not be properly updated.
+         */
+        value: string;
+        defaultValue: number;
+        getCurrentValue(): number;
+        setCurrentValue( val: number ): void;
         choices: string[];
+        valueElem?: HTMLElement;
     }
 
     class ToggleButtonElement extends ButtonElement {
@@ -82,4 +90,6 @@ declare global {
     // dataStorage.js
     function GetStoredData( _key: string ): string | null;
     function SetStoredData( _key: string, _data: string ): string | null;
+    function DeleteStoredData( _key: string ): string | null;
+    function SearchStoredData( _key: string ): { key: string, data: string }[] | null;
 }

@@ -115,8 +115,23 @@ export function updateThrottlePanelMode( mode: ReturnType<typeof getThrottlePane
 
 export function updateNumberDisplayType( type: NumberDisplayType ) {
     const { el } = UIElements;
+
     el.numberSimpleContainer.classList.toggle( "hide", type !== "simple" );
     el.numberVerboseContainer.classList.toggle( "hide", type !== "verbose" );
+
+    const { confNumericDisp } = el;
+    const nextValue = confNumericDisp.choices.indexOf( type );
+    if ( nextValue < 0 ) {
+        throw new Error( "[updateNumberDisplayType] Invalid number display type: " + type );
+    }
+
+    if ( nextValue !== confNumericDisp.getCurrentValue() ) {
+        if ( !confNumericDisp.valueElem ) {
+            confNumericDisp.defaultValue = nextValue;
+        } else {
+            confNumericDisp.setCurrentValue( nextValue );
+        }
+    }
 }
 
 export function updateEnablePropMixBar( value: boolean ) {
@@ -151,6 +166,11 @@ export namespace config {
     function configKey( name: string ) {
         return PANEL_NAME + "." + name;
     }
+
+    export function dumpStoredData() {
+        const storedData = SearchStoredData( PANEL_NAME );
+        console.log( `${storedData!.length} item(s) are found in Storage.` );
+    }
     
     export function getData( name: string ) {
         const key = configKey( name );
@@ -165,12 +185,30 @@ export namespace config {
         console.log( `[SetStoredData] ${key} = ${value}` );
     }
 
+    function deleteData( name: string ) {
+        const key = configKey( name );
+        DeleteStoredData( key );
+        console.log( `[DeleteStoredData] ${key}` );
+    }
+
     export function getEnablePropMixBar( modelName: string ) {
-        let value = getData( ENABLE_PROPMIX_BAR + ":" + modelName );
+        const name = ENABLE_PROPMIX_BAR + ":" + modelName;
+        let value = getData( name );
         if ( value === "" ) {
             console.log( "[getEnablePropMixBar] Using the default value..." );
             return propMixAircraftMap[modelName];
         }
         return value === "1";
+    }
+
+    export function setEnablePropMixBar( modelName: string, isEnable: boolean ) {
+        const name = ENABLE_PROPMIX_BAR + ":" + modelName;
+        if ( isEnable && modelName in propMixAircraftMap ) {
+            // Remove the current setting
+            deleteData( name );
+            return;
+        }
+        // Store the value
+        setData( name, isEnable ? "1" : "0" );
     }
 }

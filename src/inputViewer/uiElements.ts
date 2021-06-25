@@ -26,6 +26,7 @@ export class UIElements {
         mainThrottlePanel: HTMLElement;
         numberSimpleContainer: HTMLElement;
         numberVerboseContainer: HTMLElement;
+        confNumericDisp: NewListButtonElement;
         confPropMix: ToggleButtonElement;
     };
 }

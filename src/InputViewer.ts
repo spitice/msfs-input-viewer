@@ -84,8 +84,8 @@ class InputViewerElement extends TemplateElement implements IUIElement {
         const elConfCont        = find( "ConfigPopup_Container" );
         const elConfClose       = find( "Config_Close" );
         const elConfScroll      = find( "Config_ScrollCont" );
-        const elConfNumericDisp = find( "Config_NumericDisp" );
-        const elConfPropMix     = find( "Config_TogglePropMix" );
+        const elConfNumericDisp = find( "Config_NumericDisp" ) as NewListButtonElement;
+        const elConfPropMix     = find( "Config_TogglePropMix" ) as ToggleButtonElement;
 
         this._el = {
             frame: elFrame,
@@ -109,11 +109,11 @@ class InputViewerElement extends TemplateElement implements IUIElement {
         } );
 
         elConfNumericDisp.addEventListener( "OnValidate", e => {
-            const input = e.target as any as NewListButtonElement;
-            const choice = input.choices[input.currentValue];
-            console.log( "CHOICE: ", input.currentValue, choice );
+            const input = elConfNumericDisp;
+            const choice = input.choices[input.getCurrentValue()];
+            console.log( "CHOICE: ", input.getCurrentValue(), choice );
 
-            store.dispatch( A.setNumberDisplayType( choice.toLowerCase() as any ) );
+            store.dispatch( A.setNumberDisplayType( choice as any ) );
             store.dispatch( A.forceUpdateAllInputs() );
         } );
 
@@ -138,7 +138,8 @@ class InputViewerElement extends TemplateElement implements IUIElement {
             mainThrottlePanel: find( "ThrottlePanel" ),
             numberSimpleContainer: find( "NumberDisp_Simple_Container" ),
             numberVerboseContainer: find( "NumberDisp_Verbose_Container" ),
-            confPropMix: elConfPropMix as any,
+            confNumericDisp: elConfNumericDisp,
+            confPropMix: elConfPropMix,
         };
 
         // Set up update loop

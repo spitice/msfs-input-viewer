@@ -54,6 +54,9 @@ const AIRCRAFT_DATA_UPDATE_INTERVAL = 1000;
 const loadConfigGeneral: E = action$ => action$.pipe(
     filter( A.setStorageReady.match ),
     filter( ({ payload: isReady }) => isReady ),
+    tap( () => {
+        config.dumpStoredData();
+    } ),
     mergeMap( () => of(
         A.setLoadingConfig( true ),
         A.setNumberDisplayType( ( config.getData( config.NUMBER_DISPLAY_MODE ) as any ) || "none" ),
@@ -80,6 +83,22 @@ const loadConfigAircraft: E = ( action$, state$ ) => action$.pipe(
         A.setEnablePropMixBar( config.getEnablePropMixBar( model ) ),
         A.setLoadingConfig( false ),
     ) ),
+);
+
+const saveNumberDisplayType: E = action$ => action$.pipe(
+    filter( A.setNumberDisplayType.match ),
+    tap( ({ payload }) => {
+        config.setData( config.NUMBER_DISPLAY_MODE, payload );
+    } ),
+    ignoreElements()
+);
+const saveEnablePropMixBar: E = ( action$, state$ ) => action$.pipe(
+    filter( A.setEnablePropMixBar.match ),
+    withLatestFrom( state$ ),
+    tap( ([ { payload }, state ]) => {
+        config.setEnablePropMixBar( state.aircraft.model, payload );
+    } ),
+    ignoreElements()
 );
 
 
@@ -254,10 +273,13 @@ const epics: E[] = [
     // Debug
     logActions,
 
-    // Load
+    // Load & Save
     loadConfigGeneral,
     loadConfigAircraft,
+    saveNumberDisplayType,
+    saveEnablePropMixBar,
 
+    // SimVar
     fetchSimVarAircraft,
     fetchSimVarInput,
 
