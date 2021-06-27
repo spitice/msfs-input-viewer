@@ -37,6 +37,7 @@ export function getInputData(): InputData {
 export function getAircraftData(): AircraftData {
     return {
         model:      SimVar.GetSimVarValue( "ATC MODEL", "string" ),
+        name:       SimVar.GetSimVarValue( "TITLE", "string" ),
         numEngines: SimVar.GetSimVarValue( "NUMBER OF ENGINES", "number" ),
     };
 }
@@ -139,6 +140,10 @@ export function updateEnablePropMixBar( value: boolean ) {
     if ( confPropMix.getValue() != value ) {
         confPropMix.setValue( value );
     }
+}
+
+export function updateAircraftName( name: string ) {
+    UIElements.el.confAircraftModel.innerText = Utils.Translate( name )!;
 }
 
 

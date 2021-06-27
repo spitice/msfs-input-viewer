@@ -40,6 +40,10 @@ declare global {
         static off( eventName: string, callback: ( ...args: any[] ) => any ): void;
     }
 
+    class Utils {
+        static Translate( key: string ): string | null;
+    }
+
     interface SimVarNameTypeMap {
         "AILERON POSITION": number;
         "ELEVATOR POSITION": number;
@@ -58,6 +62,7 @@ declare global {
 
         "NUMBER OF ENGINES": number;
 
+        "TITLE": string;
         "ATC MODEL": string;
 
         "AUTOPILOT AIRSPEED HOLD": boolean;

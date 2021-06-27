@@ -34,6 +34,7 @@ import {
     getAircraftData,
     getInputData,
     getThrottlePanelMode,
+    updateAircraftName,
     updateEnablePropMixBar,
     updateHorizontalBar,
     updateNumberDisplaySimple,
@@ -253,6 +254,16 @@ const checkConfigEnablePropMixBar: E = action$ => action$.pipe(
     ignoreElements(),
 );
 
+const checkAircraftName: E = action$ => action$.pipe(
+    filter( A.setAircraft.match ),
+    map( ({ payload }) => payload.name ),
+    distinctUntilChanged(),
+    tap( name => {
+        updateAircraftName( name );
+    } ),
+    ignoreElements(),
+)
+
 // Updates throttle UI
 // const onChangeEngine: E = ( action$, state$ ) => action$.pipe(
 //     filter()
@@ -306,6 +317,7 @@ const epics: E[] = [
     checkThrottlePanelMode,
     checkNumberDisplayType,
     checkConfigEnablePropMixBar,
+    checkAircraftName,
 ];
 
 export const epic: E = ( action$, store$, dependencies ) =>

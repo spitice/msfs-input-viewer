@@ -28,5 +28,6 @@ export class UIElements {
         numberVerboseContainer: HTMLElement;
         confNumericDisp: NewListButtonElement;
         confPropMix: ToggleButtonElement;
+        confAircraftModel: HTMLElement;
     };
 }

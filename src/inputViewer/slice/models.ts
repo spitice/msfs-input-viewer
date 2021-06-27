@@ -15,7 +15,12 @@ export type InputData = {
 };
 
 export interface AircraftData {
+    /**
+     * "TITLE" may differ based on the livery currently using so we use "ATC
+     * MODEL" to distinguish the aircraft types.
+     */
     model: string;
+    name: string;
     numEngines: number;
 }
 

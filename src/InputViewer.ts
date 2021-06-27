@@ -139,6 +139,7 @@ class InputViewerElement extends TemplateElement implements IUIElement {
             numberVerboseContainer: find( "NumberDisp_Verbose_Container" ),
             confNumericDisp: elConfNumericDisp,
             confPropMix: elConfPropMix,
+            confAircraftModel: find( "Config_AircraftModel" ),
         };
 
         // Set up update loop
@@ -160,6 +161,12 @@ class InputViewerElement extends TemplateElement implements IUIElement {
         elFrame.addEventListener( "ToggleExternPanel", this._onResize );
 
         document.addEventListener( "dataStorageReady", this._onStorageReady );
+
+        setTimeout( () => {
+            console.log(
+                (window.top as any)["simvar"].valu("model")
+            );
+        }, 1000 );
     }
 
     disconnectedCallback() {
