@@ -86,6 +86,7 @@ class InputViewerElement extends TemplateElement implements IUIElement {
         const elConfClose       = find( "Config_Close" );
         const elConfScroll      = find( "Config_ScrollCont" );
         const elConfNumericDisp = find( "Config_NumericDisp" ) as NewListButtonElement;
+        const elConfQHideDur    = find( "Config_QuickHideDuration" ) as NewListButtonElement;
         const elConfPropMix     = find( "Config_TogglePropMix" ) as ToggleButtonElement;
 
         this._el = {
@@ -117,8 +118,15 @@ class InputViewerElement extends TemplateElement implements IUIElement {
 
             store.dispatch( A.setNumberDisplayType( choice as any ) );
         } );
+        elConfQHideDur.addEventListener( "OnValidate", e => {
+            const input = elConfQHideDur;
+            const value = input.getCurrentValue();
+            store.dispatch( A.setQuickHideDuration( value ) );
+        } );
 
         UIElements.el = {
+            frame: elFrame,
+
             main: {
                 stick:      find( "StickInputPos" ),
                 stickTrim:  find( "StickTrimPos" ),
@@ -140,6 +148,7 @@ class InputViewerElement extends TemplateElement implements IUIElement {
             numberSimpleContainer: find( "NumberDisp_Simple_Container" ),
             numberVerboseContainer: find( "NumberDisp_Verbose_Container" ),
             confNumericDisp: elConfNumericDisp,
+            confQuickHideDuration: elConfQHideDur,
             confPropMix: elConfPropMix,
             confAircraftModel: find( "Config_AircraftModel" ),
         };
@@ -238,11 +247,7 @@ class InputViewerElement extends TemplateElement implements IUIElement {
             console.log( "Double clicked on Open Config button. Ignored." );
             return;
         }
-        console.log( "Double clicked!" );
-        this._el.frame.visible = false;
-        setTimeout( () => {
-            this._el.frame.visible = true;
-        }, 2000 );
+        store.dispatch( A.quickHidePanel() );
     };
 }
 

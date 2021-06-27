@@ -27,8 +27,8 @@ export interface AircraftData {
 export type NumberDisplayType = "none" | "simple" | "verbose";
 
 export interface Config {
-    enableAutoHideFrame: boolean;
     numberDisplayType: NumberDisplayType;
+    quickHideDuration: number;
     enablePropMixBar: boolean;
 }
 

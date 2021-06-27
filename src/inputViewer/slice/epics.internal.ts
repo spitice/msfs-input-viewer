@@ -114,6 +114,16 @@ export function updateThrottlePanelMode( mode: ReturnType<typeof getThrottlePane
     console.log( "[updateThrottlePanelMode()] mode: " + mode );
 }
 
+function updateListCurrentValue( el: NewListButtonElement, value: number ) {
+    if ( value !== el.getCurrentValue() ) {
+        if ( !el.valueElem ) {
+            el.defaultValue = value;
+        } else {
+            el.setCurrentValue( value );
+        }
+    }
+}
+
 export function updateNumberDisplayType( type: NumberDisplayType ) {
     const { el } = UIElements;
 
@@ -126,13 +136,11 @@ export function updateNumberDisplayType( type: NumberDisplayType ) {
         throw new Error( "[updateNumberDisplayType] Invalid number display type: " + type );
     }
 
-    if ( nextValue !== confNumericDisp.getCurrentValue() ) {
-        if ( !confNumericDisp.valueElem ) {
-            confNumericDisp.defaultValue = nextValue;
-        } else {
-            confNumericDisp.setCurrentValue( nextValue );
-        }
-    }
+    updateListCurrentValue( confNumericDisp, nextValue );
+}
+
+export function updateQuickHideDuration( duration: number ) {
+    updateListCurrentValue( UIElements.el.confQuickHideDuration, duration );
 }
 
 export function updateEnablePropMixBar( value: boolean ) {
@@ -146,9 +154,18 @@ export function updateAircraftName( name: string ) {
     UIElements.el.confAircraftModel.innerText = Utils.Translate( name )!;
 }
 
+export function quickHidePanel( duration: number ) {
+    const { frame } = UIElements.el;
+    frame.visible = false;
+    setTimeout( () => {
+        frame.visible = true;
+    }, duration * 1000 );
+}
+
 
 export namespace config {
     export const NUMBER_DISPLAY_MODE    = "NUMBER_DISPLAY_MODE";
+    export const QUICK_HIDE_DURATION    = "QUICK_HIDE_DURATION";
     export const ENABLE_PROPMIX_BAR     = "ENABLE_PROPMIX_BAR";
 
     const propMixAircrafts = [
@@ -194,6 +211,19 @@ export namespace config {
         const key = configKey( name );
         DeleteStoredData( key );
         console.log( `[DeleteStoredData] ${key}` );
+    }
+
+    export function getQuickHideDuration() {
+        const DEFAULT_VALUE = 2;
+        const data = getData( QUICK_HIDE_DURATION );
+        if ( !data || data == "" ) {
+            return DEFAULT_VALUE;  // default value
+        }
+        const value = parseInt( data );
+        if ( isNaN( value ) ) {
+            return DEFAULT_VALUE;
+        }
+        return Math.max( 0, Math.min( 3, value ) );
     }
 
     export function getEnablePropMixBar( modelName: string ) {

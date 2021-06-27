@@ -19,6 +19,8 @@ export type NumberDisplayElements = Elements<SimVarAxisInput>;
 
 export class UIElements {
     static el: {
+        frame: ingameUiElement;
+
         main: Elements<StickInput> & Elements<RudAxis> & Elements_Bar;
         numberSimple: NumberDisplayElements;
         numberVerbose: NumberDisplayElements;
@@ -27,6 +29,7 @@ export class UIElements {
         numberSimpleContainer: HTMLElement;
         numberVerboseContainer: HTMLElement;
         confNumericDisp: NewListButtonElement;
+        confQuickHideDuration: NewListButtonElement;
         confPropMix: ToggleButtonElement;
         confAircraftModel: HTMLElement;
     };

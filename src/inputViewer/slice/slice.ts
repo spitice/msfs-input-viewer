@@ -43,8 +43,8 @@ const initialState: InputViewerState = {
     },
 
     config: {
-        enableAutoHideFrame: true,
         numberDisplayType: "none",
+        quickHideDuration: 2,
         enablePropMixBar: false,
     },
 };
@@ -70,6 +70,9 @@ const inputViewerSlice = createSlice({
         setNumberDisplayType: ( state, { payload }: PA<NumberDisplayType> ) => {
             state.config.numberDisplayType = payload;
         },
+        setQuickHideDuration: ( state, { payload }: PA<number> ) => {
+            state.config.quickHideDuration = payload;
+        },
         setEnablePropMixBar: ( state, { payload }: PA<boolean> ) => {
             state.config.enablePropMixBar = payload;
         },
@@ -77,6 +80,7 @@ const inputViewerSlice = createSlice({
         // Epic triggers
         fetchSimVar: noop,
         forceUpdateAllInputs: noop,
+        quickHidePanel: noop,
     },
 })
 

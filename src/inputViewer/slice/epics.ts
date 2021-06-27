@@ -34,6 +34,7 @@ import {
     getAircraftData,
     getInputData,
     getThrottlePanelMode,
+    quickHidePanel,
     updateAircraftName,
     updateEnablePropMixBar,
     updateHorizontalBar,
@@ -41,6 +42,7 @@ import {
     updateNumberDisplaySimpleSign,
     updateNumberDisplayType,
     updateNumberDisplayVerbose,
+    updateQuickHideDuration,
     updateRudder,
     updateStick,
     updateThrottlePanelMode,
@@ -61,6 +63,7 @@ const loadConfigGeneral: E = action$ => action$.pipe(
     mergeMap( () => of(
         A.setLoadingConfig( true ),
         A.setNumberDisplayType( ( config.getData( config.NUMBER_DISPLAY_MODE ) as any ) || "none" ),
+        A.setQuickHideDuration( config.getQuickHideDuration() ),
         A.setLoadingConfig( false ),
     ) ),
 );
@@ -90,6 +93,13 @@ const saveNumberDisplayType: E = action$ => action$.pipe(
     filter( A.setNumberDisplayType.match ),
     tap( ({ payload }) => {
         config.setData( config.NUMBER_DISPLAY_MODE, payload );
+    } ),
+    ignoreElements()
+);
+const saveQuickHideDuration: E = action$ => action$.pipe(
+    filter( A.setQuickHideDuration.match ),
+    tap( ({ payload }) => {
+        config.setData( config.QUICK_HIDE_DURATION, payload.toString() );
     } ),
     ignoreElements()
 );
@@ -246,6 +256,14 @@ const checkNumberDisplayType: E = action$ => action$.pipe(
     map( () => A.forceUpdateAllInputs() ),
 );
 
+const checkQuickHideDuration: E = action$ => action$.pipe(
+    filter( A.setQuickHideDuration.match ),
+    tap( ({ payload }) => {
+        updateQuickHideDuration( payload );
+    } ),
+    ignoreElements(),
+);
+
 const checkConfigEnablePropMixBar: E = action$ => action$.pipe(
     filter( A.setEnablePropMixBar.match ),
     tap( ({ payload }) => {
@@ -262,12 +280,18 @@ const checkAircraftName: E = action$ => action$.pipe(
         updateAircraftName( name );
     } ),
     ignoreElements(),
-)
+);
 
-// Updates throttle UI
-// const onChangeEngine: E = ( action$, state$ ) => action$.pipe(
-//     filter()
-// );
+const handleQuickHidePanel: E = ( action$, state$ ) => action$.pipe(
+    filter( A.quickHidePanel.match ),
+    withLatestFrom( state$ ),
+    map( ([ _action, state ]) => state.config.quickHideDuration ),
+    filter( duration => duration > 0 ),
+    tap( duration => {
+        quickHidePanel( duration );
+    } ),
+    ignoreElements(),
+);
 
 const logActions: E = action$ => action$.pipe(
     filter( isAnyOf(
@@ -288,6 +312,7 @@ const epics: E[] = [
     loadConfigGeneral,
     loadConfigAircraft,
     saveNumberDisplayType,
+    saveQuickHideDuration,
     saveEnablePropMixBar,
 
     // SimVar
@@ -316,8 +341,12 @@ const epics: E[] = [
     // Configuration handlers
     checkThrottlePanelMode,
     checkNumberDisplayType,
+    checkQuickHideDuration,
     checkConfigEnablePropMixBar,
     checkAircraftName,
+
+    // Quick hide
+    handleQuickHidePanel,
 ];
 
 export const epic: E = ( action$, store$, dependencies ) =>
