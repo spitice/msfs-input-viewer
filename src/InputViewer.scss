@@ -10,9 +10,11 @@ html, body {
     box-sizing: inherit;
 }
 
+#InputViewer_Frame .ingameUiWrapper {
+    position: relative;
+}
+
 #DevOverlay {
-    // We need keep this absolute to properly scale "ConfigPopup_Container"
-    // panel for now...
     position: absolute;
     width: 100%;
     height: 100%;
@@ -25,7 +27,7 @@ html, body {
 }
 
 #ConfigPopup_Container {
-    position: relative;
+    position: absolute;
     width: 100%;
     height: 100%;
     min-height: 100%;
@@ -33,7 +35,6 @@ html, body {
 
     background-color: rgba(0, 0, 0, 0.7);
 
-    // flex: 1 1 auto;
     display: flex;
     flex-direction: column;
 
@@ -52,6 +53,10 @@ html, body {
         padding: scaled(16) scaled(16) scaled(8);
 
         font-weight: normal;
+
+        &:not(:first-child) {
+            margin-top: scaled(16);
+        }
     }
 
     .info {
@@ -95,13 +100,29 @@ html, body {
     width: 100%;
     height: 100%;
 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
     z-index: 50;
     pointer-events: none;
 
-    background-color: var(--backgroundColorPanel);
+    .numberDispGrid {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
 
-    .numberDisp {
-        font-size: calc(var(--fontSizeParagraph) * 0.75);
+        div {
+            padding: 0 scaled(16);
+
+            font-size: calc(var(--fontSizeParagraph) * 0.75);
+
+            background-color: var(--color-black-op20);
+
+            &:nth-child(4n+1),
+            &:nth-child(4n+2) {
+                background-color: var(--color-black-op30);
+            }
+        }
     }
 }
 
@@ -146,7 +167,7 @@ html, body {
             font-weight: 800;
             fill: rgba(0, 0, 0, 0.7);
         }
-        .value {
+        .numberDisp {
             fill: white;
             .zero {
                 fill: rgba(255, 255, 255, 0.5);

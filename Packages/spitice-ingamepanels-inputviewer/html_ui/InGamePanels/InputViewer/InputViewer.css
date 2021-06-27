@@ -8,6 +8,10 @@ html, body {
   box-sizing: inherit;
 }
 
+#InputViewer_Frame .ingameUiWrapper {
+  position: relative;
+}
+
 #DevOverlay {
   position: absolute;
   width: 100%;
@@ -20,7 +24,7 @@ html, body {
 }
 
 #ConfigPopup_Container {
-  position: relative;
+  position: absolute;
   width: 100%;
   height: 100%;
   min-height: 100%;
@@ -39,6 +43,9 @@ html, body {
 #ConfigPopup_Container .sectionTitle {
   padding: calc(var(--screenHeight) * (16px / 2160)) calc(var(--screenHeight) * (16px / 2160)) calc(var(--screenHeight) * (8px / 2160));
   font-weight: normal;
+}
+#ConfigPopup_Container .sectionTitle:not(:first-child) {
+  margin-top: calc(var(--screenHeight) * (16px / 2160));
 }
 #ConfigPopup_Container .info {
   display: flex;
@@ -70,12 +77,23 @@ html, body {
   position: absolute;
   width: 100%;
   height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   z-index: 50;
   pointer-events: none;
-  background-color: var(--backgroundColorPanel);
 }
-#NumberDisp_Verbose_Container .numberDisp {
+#NumberDisp_Verbose_Container .numberDispGrid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+}
+#NumberDisp_Verbose_Container .numberDispGrid div {
+  padding: 0 calc(var(--screenHeight) * (16px / 2160));
   font-size: calc(var(--fontSizeParagraph) * 0.75);
+  background-color: var(--color-black-op20);
+}
+#NumberDisp_Verbose_Container .numberDispGrid div:nth-child(4n+1), #NumberDisp_Verbose_Container .numberDispGrid div:nth-child(4n+2) {
+  background-color: var(--color-black-op30);
 }
 
 #NumberDisp_Simple_Container {
@@ -117,10 +135,10 @@ html, body {
   font-weight: 800;
   fill: rgba(0, 0, 0, 0.7);
 }
-#NumberDisp_Simple_Container .label .value {
+#NumberDisp_Simple_Container .label .numberDisp {
   fill: white;
 }
-#NumberDisp_Simple_Container .label .value .zero {
+#NumberDisp_Simple_Container .label .numberDisp .zero {
   fill: rgba(255, 255, 255, 0.5);
 }
 #NumberDisp_Simple_Container .throttleContainer > g {
