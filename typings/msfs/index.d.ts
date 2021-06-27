@@ -10,6 +10,10 @@ declare global {
 
     }
 
+    class ingameUiElement extends TemplateElement {
+        visible: boolean;
+    }
+
     class NewListButtonElement extends ButtonElement {
         /**
          * You should set the current choice via `setCurrentValue` otherwise the

@@ -20,8 +20,9 @@ class InputViewerElement extends TemplateElement implements IUIElement {
     _isConnected: boolean = false;
 
     _el!: {
-        frame: HTMLElement,
+        frame: ingameUiElement,
         cont: HTMLElement,
+        openConf: HTMLElement,
     };
 
     constructor() {
@@ -31,7 +32,7 @@ class InputViewerElement extends TemplateElement implements IUIElement {
     connectedCallback() {
         this._isConnected = true;
 
-        const elFrame = document.getElementById( "InputViewer_Frame" )!;
+        const elFrame = document.getElementById( "InputViewer_Frame" )! as ingameUiElement;
 
         const find = ( id: string ) => {
             const query = "#" + id;
@@ -90,6 +91,7 @@ class InputViewerElement extends TemplateElement implements IUIElement {
         this._el = {
             frame: elFrame,
             cont: elCont,
+            openConf: elOpenConf,
         };
 
         elOpenConf.addEventListener( "OnValidate", e => {
@@ -153,6 +155,9 @@ class InputViewerElement extends TemplateElement implements IUIElement {
         };
         requestAnimationFrame( updateLoop );
 
+
+        elCont.addEventListener( "dblclick", this._onDoubleClick );
+
         // TODO: Use ToolBarListener for this handlers
         window.addEventListener( "resize", this._onResize );
         // When you close an externalized panel, "resize" event will be emitted
@@ -173,8 +178,9 @@ class InputViewerElement extends TemplateElement implements IUIElement {
         super.disconnectedCallback();
 
         document.addEventListener( "dataStorageReady", this._onStorageReady );
-        this._el.frame.removeEventListener( "ToggleExternPanel", this._onResize );
+        this._el.cont.removeEventListener( "dblclick", this._onDoubleClick );
         window.removeEventListener( "resize", this._onResize );
+        this._el.frame.removeEventListener( "ToggleExternPanel", this._onResize );
 
         UIElements.el = {} as any;
 
@@ -231,6 +237,19 @@ class InputViewerElement extends TemplateElement implements IUIElement {
         }
         store.dispatch( A.fetchSimVar() );
     }
+
+    _onDoubleClick = ( e: Event ) => {
+        // console.log( e );
+        if ( e.target === this._el.openConf ) {
+            console.log( "Double clicked on Open Config button. Ignored." );
+            return;
+        }
+        console.log( "Double clicked!" );
+        this._el.frame.visible = false;
+        setTimeout( () => {
+            this._el.frame.visible = true;
+        }, 2000 );
+    };
 }
 
 window.customElements.define( "ingamepanel-input-viewer", InputViewerElement );

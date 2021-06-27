@@ -27,7 +27,6 @@ html, body {
   position: absolute;
   width: 100%;
   height: 100%;
-  min-height: 100%;
   z-index: 100;
   background-color: rgba(0, 0, 0, 0.7);
   display: flex;
@@ -168,7 +167,7 @@ html, body {
   display: inline;
 }
 
-#InputViewer #InputViewer_Container {
+#InputViewer_Container {
   overflow: hidden;
   --widgetWidth: 100px;
   --panelDim: calc(var(--widgetWidth) * (220 / 280));
@@ -185,16 +184,16 @@ html, body {
   align-content: center;
   background-color: rgba(0, 0, 0, 0.1);
 }
-#InputViewer #InputViewer_Container #OpenConfigPanel {
+#InputViewer_Container #OpenConfigPanel {
   grid-area: config;
 }
-#InputViewer #InputViewer_Container #StickPanel {
+#InputViewer_Container #StickPanel {
   grid-area: stick;
 }
-#InputViewer #InputViewer_Container #RudderPanel {
+#InputViewer_Container #RudderPanel {
   grid-area: rudder;
 }
-#InputViewer #InputViewer_Container #ThrottlePanel {
+#InputViewer_Container #ThrottlePanel {
   grid-area: throttle;
 }
 
