@@ -5,7 +5,6 @@ node_modules
 dist
 _PackageInt
 
-Packages/*/html_ui/InGamePanels/*/*.js
-Packages/*/html_ui/InGamePanels/*/*.js.map
+Packages/*
 
 _copy-to-msfs.bat
