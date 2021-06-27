@@ -166,12 +166,6 @@ class InputViewerElement extends TemplateElement implements IUIElement {
         elFrame.addEventListener( "ToggleExternPanel", this._onResize );
 
         document.addEventListener( "dataStorageReady", this._onStorageReady );
-
-        setTimeout( () => {
-            console.log(
-                (window.top as any)["simvar"].valu("model")
-            );
-        }, 1000 );
     }
 
     disconnectedCallback() {
