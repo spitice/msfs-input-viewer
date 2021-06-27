@@ -41,8 +41,29 @@ If it doesn't appear, access the list of in-game panels by clicking the gear ico
 
 The initial position of the panel might be the top right of your screen. Drag the header and the border to move and resize the panel as you want.
 
-By default, the throttle panel only shows the throttle axes. To enable Propeller RPM and Mixture axis, click the toggle switch located at the bottom left.
+![main-screen](doc/images/input-viewer-main.jpg)
 
+### Configuration
+
+Click the "gear" button located at the bottom left of the panel to open the configuration menu.
+
+![configuration](doc/images/configuration-screen.jpg)
+
+### Number Display
+
+InputViewer contains two types of number display for each axis. Default is none, so you need to manually activate this feature via configuration.
+
+![number display](doc/images/number-display.jpg)
+
+Perhaps, you will notice that trim numbers in the simple number display sometimes showing two different types of zero: "0" and "0.0". When you tweak those values via keys or buttons, not via axis, sometimes it causes a rounding error, in which the fraction digits would not be completely zeroed out thus it becomes a very small number. As a result, the simple number display shows "0" for the perfect zero value and "0.0" for those "almost zero" values.
+
+### Quick Hide
+
+By double-clicking inside of the panel, you can temporarily hide it so it won't ruin your masterpiece when you take screenshots! The duration for quick hiding is two seconds by default. You can choose 1, 2, or 3 seconds as the duration or make the feature completely disabled in the configuration screen.
+
+### Propeller/Mixture Bar
+
+As of v1.1, you can tweak the visibility of the propeller/mixture bar in the configuration screen and the addon will remember which option is chosen for each aircraft model. By default, this option will be automatically set for those aircraft bundled with MSFS Standard edition.
 
 ## Repository
 
@@ -53,5 +74,19 @@ https://github.com/spitice/msfs-input-viewer
 
 ## Acknowledgements
 
-- [msfs2020-toolbar-window-template](https://github.com/bymaximus/msfs2020-toolbar-window-template) helped me a lot to kick off this project.
-- [msfs-webui-devkit](https://github.com/dga711/msfs-webui-devkit) makes developing a custom UI easier.
+- [msfs2020-toolbar-window-template](https://github.com/bymaximus/msfs2020-toolbar-window-template)
+- [msfs-webui-devkit](https://github.com/dga711/msfs-webui-devkit)
+
+## Changelog
+
+### v1.1.0 (June 27, 2021)
+
+- Add config panel and auto-save config
+- Add simple and verbose number display
+- Add quick hide feature
+- Propeller/Mixture Bar will be automatically set for vanilla aircrafts in Standard edition
+- Lower the minimum size of the panel
+
+### v1.0.0 (May 21, 2021)
+
+Initial release.

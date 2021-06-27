@@ -1,0 +1,6 @@
+<ReleaseNote Version="1.1.0" Date="2021-6-27">- Add config panel and auto-save config
+- Add simple and verbose number display
+- Add quick hide feature
+- Propeller/Mixture Bar will be automatically set for vanilla aircrafts in Standard edition
+- Lower the minimum size of the panel</ReleaseNote>
+

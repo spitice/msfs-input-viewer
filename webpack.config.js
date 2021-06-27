@@ -69,7 +69,7 @@ const webpackConfig = {
             }
         }),
         new webpack.BannerPlugin({
-            banner: "Interested in the source code? Please github page: https://github.com/spitice/msfs-input-viewer",
+            banner: "Interested in the source code? You may want to visit our github repository: https://github.com/spitice/msfs-input-viewer",
         }),
     ],
 
