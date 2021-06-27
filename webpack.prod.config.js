@@ -9,6 +9,7 @@ const baseConfig = require("./webpack.config");
 // Mitigating the type error
 /** @type {any} */
 const terserPlugin = new TerserPlugin({
+    extractComments: false,  // Avoid ".js.LICENSE.txt" to be generated
     terserOptions: {
         mangle: false,
         output: {

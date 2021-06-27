@@ -4,6 +4,7 @@
 
 const path = require("path");
 
+const webpack = require("webpack");
 const FileManagerPlugin     = require("filemanager-webpack-plugin");
 const MiniCssExtractPlugin  = require("mini-css-extract-plugin");
 const PnpPlugin             = require("pnp-webpack-plugin");
@@ -66,6 +67,9 @@ const webpackConfig = {
                     ]
                 }
             }
+        }),
+        new webpack.BannerPlugin({
+            banner: "Interested in the source code? Please github page: https://github.com/spitice/msfs-input-viewer",
         }),
     ],
 

@@ -2,8 +2,9 @@
   "name": "msfs-input-viewer",
   "private": true,
   "scripts": {
-    "build": "run-s clean compile copy-static build-msfs",
+    "build": "run-s build-without-msfs build-msfs",
     "build-msfs": "\"$MSFS_SDK/Tools/bin/fspackagetool.exe\" input-viewer.xml -nomirroring",
+    "build-without-msfs": "run-s clean compile copy-static",
     "clean": "rimraf _PackageInt dist Packages/spitice-ingamepanels-inputviewer",
     "compile": "webpack --config ./webpack.prod.config.js",
     "copy-static": "cpx 'static/**/*' 'Packages/spitice-ingamepanels-inputviewer'",
