@@ -242,7 +242,7 @@ const checkNumberDisplayType: E = action$ => action$.pipe(
     tap( ({ payload }) => {
         updateNumberDisplayType( payload );
     } ),
-    ignoreElements(),
+    map( () => A.forceUpdateAllInputs() ),
 );
 
 const checkConfigEnablePropMixBar: E = action$ => action$.pipe(

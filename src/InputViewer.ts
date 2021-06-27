@@ -114,7 +114,6 @@ class InputViewerElement extends TemplateElement implements IUIElement {
             console.log( "CHOICE: ", input.getCurrentValue(), choice );
 
             store.dispatch( A.setNumberDisplayType( choice as any ) );
-            store.dispatch( A.forceUpdateAllInputs() );
         } );
 
         UIElements.el = {
