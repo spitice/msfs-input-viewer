@@ -163,7 +163,10 @@ export function quickHidePanel( duration: number ) {
     }, duration * 1000 );
 }
 
-export function updateWidgetScale( panelsToShow: PanelsToShow ) {
+export function updateWidgetScale(
+    panelsToShow: PanelsToShow,
+    numberDispType: NumberDisplayType
+) {
     const _style = window.document.documentElement.style;
         
     const vpWidth = Number( _style.getPropertyValue( "--viewportWidth" ) ); // window.top.innerWidth;
@@ -184,6 +187,9 @@ export function updateWidgetScale( panelsToShow: PanelsToShow ) {
 
     if ( panelsToShow === "throttle" ) {
         widgetPrescaledWidth = 60;
+        if ( numberDispType === "simple" ) {
+            widgetPrescaledWidth += 60;
+        }
     }
 
     const widgetAspectRatio = widgetPrescaledWidth / widgetPrescaledHeight;

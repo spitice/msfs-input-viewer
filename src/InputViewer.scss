@@ -20,6 +20,11 @@
         @content;
     }
 }
+@mixin panelsAndNumberDisplayType($panels, $numberDisplayType) {
+    @at-root #InputViewer[data-panels=#{$panels}][data-number-display-type=#{$numberDisplayType}] & {
+        @content;
+    }
+}
 
 @mixin fill {
     position: absolute;
@@ -128,6 +133,10 @@ html, body {
             grid-area: misc;
         }
 
+        #StickPanel #NumberDisp_Simple_Container > svg.throttleContainer {
+            left: #{scaledWidget(15)};
+        }
+
         @include panelsToShow("throttle") {
             grid-template-columns: var(--leftWidgetWidth);
             grid-template-areas:
@@ -137,6 +146,26 @@ html, body {
             #StickPanel,
             #RudderPanel {
                 display: none;
+            }
+        }
+
+        @include panelsAndNumberDisplayType("throttle", "simple") {
+            grid-template-columns: var(--leftWidgetWidth) #{scaledWidget(60)};
+            grid-template-areas: 
+                "throttle stick"
+                "misc misc";
+            
+            #StickPanel {
+                display: inline;
+
+                > svg,
+                #NumberDisp_Simple_Container > svg {
+                    display: none;
+                }
+                #NumberDisp_Simple_Container > svg.throttleContainer {
+                    display: inline;
+                    left: 0;
+                }
             }
         }
     }
@@ -266,8 +295,23 @@ html, body {
 }
 
 
+#StickPanel {
+    > * {
+        position: absolute;
+        width: var(--rightWidgetWidth);
+        height: var(--topWidgetHeight);
+    }
+
+    #NumberDisp_Simple_Container {
+        > * {
+            position: absolute;
+        }
+    }
+}
+
 #NumberDisp_Simple_Container {
     opacity: 0.8;
+
     .bg {
         .name {
             fill: white;

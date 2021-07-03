@@ -312,7 +312,10 @@ const handleUpdateWidgetScale: E = ( action$, state$ ) => action$.pipe(
     filter( A.updateWidgetScale.match ),
     withLatestFrom( state$ ),
     tap( ([ _action, state ]) => {
-        updateWidgetScale( state.config.panels );
+        updateWidgetScale(
+            state.config.panels,
+            state.config.numberDisplayType
+        );
     } ),
     ignoreElements(),
 );

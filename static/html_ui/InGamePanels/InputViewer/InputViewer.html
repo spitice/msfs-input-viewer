@@ -39,7 +39,7 @@
             panel-id="PANEL_INPUT_VIEWER"
             class="ingameUiFrame panelInvisible"
             title=""
-            content-fit="false" min-width="40" resize="x"
+            content-fit="false" min-width="1" resize="x"
         >
             <div id="Wrapper">
                 <div id="PanelGrid">
@@ -70,8 +70,71 @@
                                 <line x1="-3" y1="-3" x2="3" y2="3" />
                                 <line x1="3" y1="-3" x2="-3" y2="3" />
                             </g>
-    
-                            <g id="NumberDisp_Simple_Container">
+                        </svg>
+                        <div id="NumberDisp_Simple_Container">
+                            <svg class="throttleContainer" height="100%" viewBox="0 -15 60 220" xmlns="http://www.w3.org/2000/svg">
+                                <g class="throttle1Container">
+                                    <g class="bg">
+                                        <rect class="name" x="0" y="0" width="25" height="15" />
+                                        <rect class="primary" x="25" y="0" width="25" height="15" />
+                                    </g>
+                                    <g class="label" transform="translate(12.5, 7.5)">
+                                        <text class="name" x="0" y="0">THR</text>
+                                        <text class="numberDisp throttle1" x="25" y="0">0</text>
+                                    </g>
+                                </g>
+                                <g class="throttle2Container" transform="translate(0, 15)">
+                                    <g class="bg">
+                                        <rect class="name" x="0" y="0" width="25" height="15" />
+                                        <rect class="primary" x="25" y="0" width="25" height="15" />
+                                    </g>
+                                    <g class="label" transform="translate(12.5, 7.5)">
+                                        <text class="name" x="0" y="0">#2</text>
+                                        <text class="numberDisp throttle2" x="25" y="0">0</text>
+                                    </g>
+                                </g>
+                                <g class="throttle3Container" transform="translate(0, 30)">
+                                    <g class="bg">
+                                        <rect class="name" x="0" y="0" width="25" height="15" />
+                                        <rect class="primary" x="25" y="0" width="25" height="15" />
+                                    </g>
+                                    <g class="label" transform="translate(12.5, 7.5)">
+                                        <text class="name" x="0" y="0">#3</text>
+                                        <text class="numberDisp throttle3" x="25" y="0">0</text>
+                                    </g>
+                                </g>
+                                <g class="throttle4Container" transform="translate(0, 45)">
+                                    <g class="bg">
+                                        <rect class="name" x="0" y="0" width="25" height="15" />
+                                        <rect class="primary" x="25" y="0" width="25" height="15" />
+                                    </g>
+                                    <g class="label" transform="translate(12.5, 7.5)">
+                                        <text class="name" x="0" y="0">#4</text>
+                                        <text class="numberDisp throttle4" x="25" y="0">0</text>
+                                    </g>
+                                </g>
+                                <g class="propeller1Container" transform="translate(0, 15)">
+                                    <g class="bg">
+                                        <rect class="name" x="0" y="0" width="25" height="15" />
+                                        <rect class="propellerPrimary" x="25" y="0" width="25" height="15" />
+                                    </g>
+                                    <g class="label" transform="translate(12.5, 7.5)">
+                                        <text class="name" x="0" y="0">PROP</text>
+                                        <text class="numberDisp propeller1" x="25" y="0">0</text>
+                                    </g>
+                                </g>
+                                <g class="mixture1Container" transform="translate(0, 30)">
+                                    <g class="bg">
+                                        <rect class="name" x="0" y="0" width="25" height="15" />
+                                        <rect class="mixturePrimary" x="25" y="0" width="25" height="15" />
+                                    </g>
+                                    <g class="label" transform="translate(12.5, 7.5)">
+                                        <text class="name" x="0" y="0">MIX</text>
+                                        <text class="numberDisp mixture1" x="25" y="0">0</text>
+                                    </g>
+                                </g>
+                            </svg>
+                            <svg width="100%" height="100%" viewBox="-110 -110 220 220" xmlns="http://www.w3.org/2000/svg">
                                 <g transform="translate(20, -95)">
                                     <g class="bg">
                                         <rect class="aileronTip" x="-2" y="0" width="2" height="15" />
@@ -124,70 +187,8 @@
                                         <text class="numberDisp brakeRight" x="50" y="0">0</text>
                                     </g>
                                 </g>
-                                <g class="throttleContainer" transform="translate(-95, -95)">
-                                    <g class="throttle1Container">
-                                        <g class="bg">
-                                            <rect class="name" x="0" y="0" width="25" height="15" />
-                                            <rect class="primary" x="25" y="0" width="25" height="15" />
-                                        </g>
-                                        <g class="label" transform="translate(12.5, 7.5)">
-                                            <text class="name" x="0" y="0">THR</text>
-                                            <text class="numberDisp throttle1" x="25" y="0">0</text>
-                                        </g>
-                                    </g>
-                                    <g class="throttle2Container" transform="translate(0, 15)">
-                                        <g class="bg">
-                                            <rect class="name" x="0" y="0" width="25" height="15" />
-                                            <rect class="primary" x="25" y="0" width="25" height="15" />
-                                        </g>
-                                        <g class="label" transform="translate(12.5, 7.5)">
-                                            <text class="name" x="0" y="0">#2</text>
-                                            <text class="numberDisp throttle2" x="25" y="0">0</text>
-                                        </g>
-                                    </g>
-                                    <g class="throttle3Container" transform="translate(0, 30)">
-                                        <g class="bg">
-                                            <rect class="name" x="0" y="0" width="25" height="15" />
-                                            <rect class="primary" x="25" y="0" width="25" height="15" />
-                                        </g>
-                                        <g class="label" transform="translate(12.5, 7.5)">
-                                            <text class="name" x="0" y="0">#3</text>
-                                            <text class="numberDisp throttle3" x="25" y="0">0</text>
-                                        </g>
-                                    </g>
-                                    <g class="throttle4Container" transform="translate(0, 45)">
-                                        <g class="bg">
-                                            <rect class="name" x="0" y="0" width="25" height="15" />
-                                            <rect class="primary" x="25" y="0" width="25" height="15" />
-                                        </g>
-                                        <g class="label" transform="translate(12.5, 7.5)">
-                                            <text class="name" x="0" y="0">#4</text>
-                                            <text class="numberDisp throttle4" x="25" y="0">0</text>
-                                        </g>
-                                    </g>
-                                    <g class="propeller1Container" transform="translate(0, 15)">
-                                        <g class="bg">
-                                            <rect class="name" x="0" y="0" width="25" height="15" />
-                                            <rect class="propellerPrimary" x="25" y="0" width="25" height="15" />
-                                        </g>
-                                        <g class="label" transform="translate(12.5, 7.5)">
-                                            <text class="name" x="0" y="0">PROP</text>
-                                            <text class="numberDisp propeller1" x="25" y="0">0</text>
-                                        </g>
-                                    </g>
-                                    <g class="mixture1Container" transform="translate(0, 30)">
-                                        <g class="bg">
-                                            <rect class="name" x="0" y="0" width="25" height="15" />
-                                            <rect class="mixturePrimary" x="25" y="0" width="25" height="15" />
-                                        </g>
-                                        <g class="label" transform="translate(12.5, 7.5)">
-                                            <text class="name" x="0" y="0">MIX</text>
-                                            <text class="numberDisp mixture1" x="25" y="0">0</text>
-                                        </g>
-                                    </g>
-                                </g>
-                            </g>
-                        </svg>
+                            </svg>
+                        </div>
                     </div>
                     <div id="RudderPanel">
                         <svg width="100%" height="100%" viewBox="-110 -20 220 40" xmlns="http://www.w3.org/2000/svg">
