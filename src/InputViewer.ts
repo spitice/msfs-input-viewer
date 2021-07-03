@@ -84,6 +84,7 @@ class InputViewerElement extends TemplateElement implements IUIElement {
         const elConfCont        = find( "ConfigPopup_Container" );
         const elConfClose       = find( "Config_Close" );
         const elConfScroll      = find( "Config_ScrollCont" );
+        const elConfPanels      = find( "Config_Panels" ) as NewListButtonElement;
         const elConfNumericDisp = find( "Config_NumericDisp" ) as NewListButtonElement;
         const elConfQHideDur    = find( "Config_QuickHideDuration" ) as NewListButtonElement;
         const elConfPropMix     = find( "Config_TogglePropMix" ) as ToggleButtonElement;
@@ -110,11 +111,14 @@ class InputViewerElement extends TemplateElement implements IUIElement {
             store.dispatch( A.setEnablePropMixBar( toggle.getValue() ) );
         } );
 
+        elConfPanels.addEventListener( "OnValidate", e => {
+            const input = elConfPanels;
+            const choice = input.choices[input.getCurrentValue()];
+            store.dispatch( A.setPanelsToShow( choice as any ) );
+        } );
         elConfNumericDisp.addEventListener( "OnValidate", e => {
             const input = elConfNumericDisp;
             const choice = input.choices[input.getCurrentValue()];
-            console.log( "CHOICE: ", input.getCurrentValue(), choice );
-
             store.dispatch( A.setNumberDisplayType( choice as any ) );
         } );
         elConfQHideDur.addEventListener( "OnValidate", e => {
@@ -144,6 +148,7 @@ class InputViewerElement extends TemplateElement implements IUIElement {
             numberSimple: findNumberDisplay( "NumberDisp_Simple_Container" ),
             numberVerbose: findNumberDisplay( "NumberDisp_Verbose_Container" ),
 
+            confPanels: elConfPanels,
             confNumericDisp: elConfNumericDisp,
             confQuickHideDuration: elConfQHideDur,
             confPropMix: elConfPropMix,
@@ -193,29 +198,7 @@ class InputViewerElement extends TemplateElement implements IUIElement {
         // Since the return value of `getBoundingClientRect` is not synchronized
         // as in-game panel gets resized or externalized, we would rely on
         // in-game panel window's size here.
-        const _style = window.document.documentElement.style;
-        
-        const vpWidth = Number( _style.getPropertyValue( "--viewportWidth" ) ); // window.top.innerWidth;
-        const vpHeight = Number( _style.getPropertyValue( "--viewportHeight" ) ); // window.top.innerHeight;
-        const screenHeight = Number( _style.getPropertyValue( "--screenHeight" ) );
-
-        const scaled = ( v: number ) => screenHeight * v / 2160;
-        const margin = scaled( 6 );
-
-        const headerHeight = scaled( 84 );
-        const isExtern = document.body.classList.contains( "extern" );
-
-        const wrapperWidth = vpWidth - margin * 2;
-        const wrapperHeight = vpHeight - margin * 2 - ( isExtern ? 0 : ( headerHeight + margin ) );
-        
-        const widgetAspectRatio = 280 / 260;
-        const widgetWidth = Math.min(
-            wrapperWidth,
-            wrapperHeight * widgetAspectRatio
-        );
-        const widgetScale = widgetWidth / 280;
-
-        this._el.uiFrame.style.setProperty( "--widgetScale", widgetScale + "px" );
+        store.dispatch( A.updateWidgetScale() );
     };
 
     _onStorageReady = ( e?: Event ) => {

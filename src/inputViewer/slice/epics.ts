@@ -25,6 +25,8 @@ import { shallowEq } from "../utils";
 import {
     AilElevAxis,
     InputViewerState,
+    NumberDisplayType,
+    PanelsToShow,
     SimVarAxisInput,
     StickInput,
     StickValues,
@@ -42,11 +44,13 @@ import {
     updateNumberDisplaySimpleSign,
     updateNumberDisplayType,
     updateNumberDisplayVerbose,
+    updatePanelsToShow,
     updateQuickHideDuration,
     updateRudder,
     updateStick,
     updateThrottlePanelMode,
     updateVerticalBar,
+    updateWidgetScale,
 } from "./epics.internal";
 import { actions as A } from "./slice";
 
@@ -62,7 +66,8 @@ const loadConfigGeneral: E = action$ => action$.pipe(
     } ),
     mergeMap( () => of(
         A.setLoadingConfig( true ),
-        A.setNumberDisplayType( ( config.getData( config.NUMBER_DISPLAY_MODE ) as any ) || "none" ),
+        A.setPanelsToShow( config.getData<PanelsToShow>( config.PANELS, "all" ) ),
+        A.setNumberDisplayType( config.getData<NumberDisplayType>( config.NUMBER_DISPLAY_MODE, "none" ) ),
         A.setQuickHideDuration( config.getQuickHideDuration() ),
         A.setLoadingConfig( false ),
     ) ),
@@ -89,6 +94,13 @@ const loadConfigAircraft: E = ( action$, state$ ) => action$.pipe(
     ) ),
 );
 
+const savePanelsToShow: E = action$ => action$.pipe(
+    filter( A.setPanelsToShow.match ),
+    tap( ({ payload }) => {
+        config.setData( config.PANELS, payload );
+    } ),
+    ignoreElements()
+);
 const saveNumberDisplayType: E = action$ => action$.pipe(
     filter( A.setNumberDisplayType.match ),
     tap( ({ payload }) => {
@@ -248,6 +260,14 @@ const checkThrottlePanelMode: E = ( action$, state$ ) => action$.pipe(
     ignoreElements()
 );
 
+
+const checkPanelsToShow: E = action$ => action$.pipe(
+    filter( A.setPanelsToShow.match ),
+    tap( ({ payload }) => {
+        updatePanelsToShow( payload );
+    } ),
+    map( () => A.updateWidgetScale() ),
+);
 const checkNumberDisplayType: E = action$ => action$.pipe(
     filter( A.setNumberDisplayType.match ),
     tap( ({ payload }) => {
@@ -255,7 +275,6 @@ const checkNumberDisplayType: E = action$ => action$.pipe(
     } ),
     map( () => A.forceUpdateAllInputs() ),
 );
-
 const checkQuickHideDuration: E = action$ => action$.pipe(
     filter( A.setQuickHideDuration.match ),
     tap( ({ payload }) => {
@@ -263,7 +282,6 @@ const checkQuickHideDuration: E = action$ => action$.pipe(
     } ),
     ignoreElements(),
 );
-
 const checkConfigEnablePropMixBar: E = action$ => action$.pipe(
     filter( A.setEnablePropMixBar.match ),
     tap( ({ payload }) => {
@@ -271,13 +289,21 @@ const checkConfigEnablePropMixBar: E = action$ => action$.pipe(
     } ),
     ignoreElements(),
 );
-
 const checkAircraftName: E = action$ => action$.pipe(
     filter( A.setAircraft.match ),
     map( ({ payload }) => payload.name ),
     distinctUntilChanged(),
     tap( name => {
         updateAircraftName( name );
+    } ),
+    ignoreElements(),
+);
+
+const handleUpdateWidgetScale: E = ( action$, state$ ) => action$.pipe(
+    filter( A.updateWidgetScale.match ),
+    withLatestFrom( state$ ),
+    tap( ([ _action, state ]) => {
+        updateWidgetScale( state.config.panels );
     } ),
     ignoreElements(),
 );
@@ -295,10 +321,12 @@ const handleQuickHidePanel: E = ( action$, state$ ) => action$.pipe(
 
 const logActions: E = action$ => action$.pipe(
     filter( isAnyOf(
-        A.setEnablePropMixBar,
-        A.setLoadingConfig,
-        A.setNumberDisplayType,
         A.setStorageReady,
+        A.setLoadingConfig,
+        A.setPanelsToShow,
+        A.setNumberDisplayType,
+        A.setQuickHideDuration,
+        A.setEnablePropMixBar,
     ) ),
     tap( action => console.log( action ) ),
     ignoreElements()
@@ -311,6 +339,7 @@ const epics: E[] = [
     // Load & Save
     loadConfigGeneral,
     loadConfigAircraft,
+    savePanelsToShow,
     saveNumberDisplayType,
     saveQuickHideDuration,
     saveEnablePropMixBar,
@@ -340,10 +369,14 @@ const epics: E[] = [
 
     // Configuration handlers
     checkThrottlePanelMode,
+    checkPanelsToShow,
     checkNumberDisplayType,
     checkQuickHideDuration,
     checkConfigEnablePropMixBar,
     checkAircraftName,
+
+    // Resize
+    handleUpdateWidgetScale,
 
     // Quick hide
     handleQuickHidePanel,

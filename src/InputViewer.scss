@@ -5,6 +5,11 @@
     @return calc(var(--widgetScale) * #{$px});
 }
 
+@mixin panelsToShow($value) {
+    @at-root #InputViewer[data-panels=#{$value}] & {
+        @content;
+    }
+}
 @mixin throttlePanelMode($mode) {
     @at-root #InputViewer[data-throttle-panel-mode=#{$mode}] & {
         @content;
@@ -64,7 +69,7 @@ html, body {
             width: var(--panelGridWidth);
             height: var(--panelGridHeight);
     
-            --leftWidgetWidgh: #{scaledWidget(60)};
+            --leftWidgetWidth: #{scaledWidget(60)};
             --rightWidgetWidth: #{scaledWidget(220)};
             --topWidgetHeight: #{scaledWidget(220)};
             --bottomWidgetHeight: #{scaledWidget(40)};
@@ -100,13 +105,15 @@ html, body {
 #Wrapper {
     #PanelGrid {
         display: grid;
-        grid-template-columns: var(--leftWidgetWidgh) var(--rightWidgetWidth);
+        grid-template-columns: var(--leftWidgetWidth) var(--rightWidgetWidth);
         grid-template-rows: var(--topWidgetHeight) var(--bottomWidgetHeight);
         grid-template-areas:
             "throttle stick"
             "misc rudder";
         justify-content: space-evenly;  // x-axis
         align-content: center;          // y-axis
+
+        background-color: rgba(0, 0, 0, 0.1);
 
         #StickPanel {
             grid-area: stick;
@@ -121,7 +128,17 @@ html, body {
             grid-area: misc;
         }
 
-        background-color: rgba(0, 0, 0, 0.1);
+        @include panelsToShow("throttle") {
+            grid-template-columns: var(--leftWidgetWidth);
+            grid-template-areas:
+                "throttle"
+                "misc";
+
+            #StickPanel,
+            #RudderPanel {
+                display: none;
+            }
+        }
     }
 }
 

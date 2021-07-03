@@ -6,6 +6,7 @@ import {
     BrakeAxis,
     InputData,
     NumberDisplayType,
+    PanelsToShow,
     RudAxis,
     SimVarAxisInput,
     StickInput,
@@ -109,10 +110,10 @@ export function getThrottlePanelMode( enablePropMixBar: boolean, numEngines: num
 
 export function updateThrottlePanelMode( mode: ReturnType<typeof getThrottlePanelMode> ) {
     UIElements.el.root.setAttribute( "data-throttle-panel-mode", mode );;
-    console.log( "[updateThrottlePanelMode()] mode: " + mode );
+    console.log( "[updateThrottlePanelMode] mode: " + mode );
 }
 
-function updateListCurrentValue( el: NewListButtonElement, value: number ) {
+function setListCurrentValue( el: NewListButtonElement, value: number ) {
     if ( value !== el.getCurrentValue() ) {
         if ( !el.valueElem ) {
             el.defaultValue = value;
@@ -121,21 +122,26 @@ function updateListCurrentValue( el: NewListButtonElement, value: number ) {
         }
     }
 }
+function setListCurrentChoice( el: NewListButtonElement, choice: string ) {
+    const value = el.choices.indexOf( choice );
+    if ( value < 0 ) {
+        throw new Error( "[setListCurrentChoice] Invalid choice: " + choice );
+    }
+    return setListCurrentValue( el, value );
+}
+
+export function updatePanelsToShow( type: PanelsToShow ) {
+    UIElements.el.root.setAttribute( "data-panels", type );
+    setListCurrentChoice( UIElements.el.confPanels, type );
+}
 
 export function updateNumberDisplayType( type: NumberDisplayType ) {
     UIElements.el.root.setAttribute( "data-number-display-type", type );
-
-    const { confNumericDisp } = UIElements.el;
-    const nextValue = confNumericDisp.choices.indexOf( type );
-    if ( nextValue < 0 ) {
-        throw new Error( "[updateNumberDisplayType] Invalid number display type: " + type );
-    }
-
-    updateListCurrentValue( confNumericDisp, nextValue );
+    setListCurrentChoice( UIElements.el.confNumericDisp, type );
 }
 
 export function updateQuickHideDuration( duration: number ) {
-    updateListCurrentValue( UIElements.el.confQuickHideDuration, duration );
+    setListCurrentValue( UIElements.el.confQuickHideDuration, duration );
 }
 
 export function updateEnablePropMixBar( value: boolean ) {
@@ -157,8 +163,42 @@ export function quickHidePanel( duration: number ) {
     }, duration * 1000 );
 }
 
+export function updateWidgetScale( panelsToShow: PanelsToShow ) {
+    const _style = window.document.documentElement.style;
+        
+    const vpWidth = Number( _style.getPropertyValue( "--viewportWidth" ) ); // window.top.innerWidth;
+    const vpHeight = Number( _style.getPropertyValue( "--viewportHeight" ) ); // window.top.innerHeight;
+    const screenHeight = Number( _style.getPropertyValue( "--screenHeight" ) );
+
+    const scaled = ( v: number ) => screenHeight * v / 2160;
+    const margin = scaled( 6 );
+
+    const headerHeight = scaled( 84 );
+    const isExtern = document.body.classList.contains( "extern" );
+
+    const wrapperWidth = vpWidth - margin * 2;
+    const wrapperHeight = vpHeight - margin * 2 - ( isExtern ? 0 : ( headerHeight + margin ) );
+    
+    let widgetPrescaledWidth = 280;
+    let widgetPrescaledHeight = 260;
+
+    if ( panelsToShow === "throttle" ) {
+        widgetPrescaledWidth = 60;
+    }
+
+    const widgetAspectRatio = widgetPrescaledWidth / widgetPrescaledHeight;
+    const widgetWidth = Math.min(
+        wrapperWidth,
+        wrapperHeight * widgetAspectRatio
+    );
+    const widgetScale = widgetWidth / widgetPrescaledWidth;
+
+    UIElements.el.uiFrame.style.setProperty( "--widgetScale", widgetScale + "px" );
+}
+
 
 export namespace config {
+    export const PANELS                 = "PANELS";
     export const NUMBER_DISPLAY_MODE    = "NUMBER_DISPLAY_MODE";
     export const QUICK_HIDE_DURATION    = "QUICK_HIDE_DURATION";
     export const ENABLE_PROPMIX_BAR     = "ENABLE_PROPMIX_BAR";
@@ -189,11 +229,11 @@ export namespace config {
         console.log( `${storedData!.length} item(s) are found in Storage.` );
     }
     
-    export function getData( name: string ) {
+    export function getData<T>( name: string, defaultValue: T ): T {
         const key = configKey( name );
         const value = GetStoredData( key )!;
         console.log( `[GetStoredData] ${key} = ${value}` );
-        return value;
+        return ( value as any as T ) || defaultValue;
     }
     
     export function setData( name: string, value: string ) {
@@ -210,10 +250,7 @@ export namespace config {
 
     export function getQuickHideDuration() {
         const DEFAULT_VALUE = 2;
-        const data = getData( QUICK_HIDE_DURATION );
-        if ( !data || data == "" ) {
-            return DEFAULT_VALUE;  // default value
-        }
+        const data = getData( QUICK_HIDE_DURATION, DEFAULT_VALUE.toString() );
         const value = parseInt( data );
         if ( isNaN( value ) ) {
             return DEFAULT_VALUE;
@@ -223,7 +260,7 @@ export namespace config {
 
     export function getEnablePropMixBar( modelName: string ) {
         const name = ENABLE_PROPMIX_BAR + ":" + modelName;
-        let value = getData( name );
+        let value = getData( name, "" );
         if ( value === "" ) {
             console.log( "[getEnablePropMixBar] Using the default value..." );
             return propMixAircraftMap[modelName];

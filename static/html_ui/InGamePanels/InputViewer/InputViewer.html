@@ -30,8 +30,9 @@
 <body class="border-box">
     <ingamepanel-input-viewer
         id="InputViewer"
-        data-throttle-panel-mode="PropMix"
+        data-panels="all"
         data-number-display-type="none"
+        data-throttle-panel-mode="PropMix"
     >
         <ingame-ui
             id="InputViewer_UIFrame"
@@ -336,6 +337,11 @@
                                     id="Config_NumericDisp"
                                     title="Numeric Display"
                                     choices="none,simple,verbose"
+                                ></new-list-button>
+                                <new-list-button
+                                    id="Config_Panels"
+                                    title="Show Panels"
+                                    choices="all,throttle"
                                 ></new-list-button>
                                 <new-list-button
                                     id="Config_QuickHideDuration"

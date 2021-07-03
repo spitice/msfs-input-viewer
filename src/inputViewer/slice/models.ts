@@ -24,9 +24,11 @@ export interface AircraftData {
     numEngines: number;
 }
 
+export type PanelsToShow = "all" | "throttle";
 export type NumberDisplayType = "none" | "simple" | "verbose";
 
 export interface Config {
+    panels: PanelsToShow;
     numberDisplayType: NumberDisplayType;
     quickHideDuration: number;
     enablePropMixBar: boolean;

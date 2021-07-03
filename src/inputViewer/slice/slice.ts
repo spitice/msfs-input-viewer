@@ -9,6 +9,7 @@ import {
     InputData,
     InputViewerState,
     NumberDisplayType,
+    PanelsToShow,
 } from "./models";
 
 const noop = () => {};
@@ -43,6 +44,7 @@ const initialState: InputViewerState = {
     },
 
     config: {
+        panels: "all",
         numberDisplayType: "none",
         quickHideDuration: 2,
         enablePropMixBar: false,
@@ -67,6 +69,9 @@ const inputViewerSlice = createSlice({
             state.aircraft = payload;
         },
 
+        setPanelsToShow: ( state, { payload }: PA<PanelsToShow> ) => {
+            state.config.panels = payload;
+        },
         setNumberDisplayType: ( state, { payload }: PA<NumberDisplayType> ) => {
             state.config.numberDisplayType = payload;
         },
@@ -78,6 +83,7 @@ const inputViewerSlice = createSlice({
         },
 
         // Epic triggers
+        updateWidgetScale: noop,
         fetchSimVar: noop,
         forceUpdateAllInputs: noop,
         quickHidePanel: noop,
