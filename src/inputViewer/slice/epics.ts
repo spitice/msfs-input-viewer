@@ -58,6 +58,14 @@ type E = Epic<Action, Action, InputViewerState>;
 
 const AIRCRAFT_DATA_UPDATE_INTERVAL = 1000;
 
+const updateLoadingState: E = action$ => action$.pipe(
+    filter( A.setLoadingConfig.match ),
+    tap( ({ payload }) => {
+        config.setLoadingConfig( payload );
+    } ),
+    ignoreElements()
+);
+
 const loadConfigGeneral: E = action$ => action$.pipe(
     filter( A.setStorageReady.match ),
     filter( ({ payload: isReady }) => isReady ),
@@ -338,6 +346,7 @@ const epics: E[] = [
     logActions,
 
     // Load & Save
+    updateLoadingState,
     loadConfigGeneral,
     loadConfigAircraft,
     savePanelsToShow,

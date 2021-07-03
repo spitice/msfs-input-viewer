@@ -228,6 +228,16 @@ export namespace config {
         const storedData = SearchStoredData( PANEL_NAME );
         console.log( `${storedData!.length} item(s) are found in Storage.` );
     }
+
+    let _isLoading = false;
+
+    /**
+     * During loading, `setData` and `deletaData` will ignore all their inputs.
+     * @param isLoading 
+     */
+    export function setLoadingConfig( isLoading: boolean ) {
+        _isLoading = isLoading;
+    }
     
     export function getData<T>( name: string, defaultValue: T ): T {
         const key = configKey( name );
@@ -237,12 +247,20 @@ export namespace config {
     }
     
     export function setData( name: string, value: string ) {
+        if ( _isLoading ) {
+            return;
+        }
+
         const key = configKey( name );
         SetStoredData( key, value );
         console.log( `[SetStoredData] ${key} = ${value}` );
     }
 
     function deleteData( name: string ) {
+        if ( _isLoading ) {
+            return;
+        }
+        
         const key = configKey( name );
         DeleteStoredData( key );
         console.log( `[DeleteStoredData] ${key}` );

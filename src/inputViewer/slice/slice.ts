@@ -17,7 +17,6 @@ const noop = () => {};
 const initialState: InputViewerState = {
     app: {
         isStorageReady: false,
-        isLoadingConfig: false,
     },
 
     input: {
@@ -58,9 +57,6 @@ const inputViewerSlice = createSlice({
         setStorageReady: ( state, { payload }: PA<boolean> ) => {
             state.app.isStorageReady = payload;
         },
-        setLoadingConfig: ( state, { payload }: PA<boolean> ) => {
-            state.app.isLoadingConfig = payload;
-        },
 
         setInput: ( state, { payload }: PA<InputData> ) => {
             state.input = payload;
@@ -83,6 +79,7 @@ const inputViewerSlice = createSlice({
         },
 
         // Epic triggers
+        setLoadingConfig: ( state, { payload }: PA<boolean> ) => {},
         updateWidgetScale: noop,
         fetchSimVar: noop,
         forceUpdateAllInputs: noop,

@@ -36,7 +36,6 @@ export interface Config {
 
 export interface App {
     isStorageReady: boolean;
-    isLoadingConfig: boolean;
 }
 
 export interface InputViewerState {
