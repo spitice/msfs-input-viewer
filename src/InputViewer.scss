@@ -1,6 +1,29 @@
 
 @use "./styles/utils" as *;
 
+@function scaledWidget($px) {
+    @return calc(var(--widgetScale) * #{$px});
+}
+
+@mixin throttlePanelMode($mode) {
+    @at-root #InputViewer[data-throttle-panel-mode=#{$mode}] & {
+        @content;
+    }
+}
+@mixin numberDisplayType($type) {
+    @at-root #InputViewer[data-number-display-type=#{$type}] & {
+        @content;
+    }
+}
+
+@mixin fill {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+
 html, body {
     margin: 0;
     padding: 0;
@@ -10,15 +33,96 @@ html, body {
     box-sizing: inherit;
 }
 
-#InputViewer_Frame .ingameUiWrapper {
+#InputViewer_UIFrame .ingameUiWrapper {
     position: relative;
 }
 
-@mixin fill {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
+#InputViewer {
+    --widgetScale: 1px;  // placeholder
+
+    --headerHeight: #{scaled(84)};
+    --margin: #{scaled(6)};
+
+    --wrapperWidth: calc(100vw - var(--margin) * 2);
+    --wrapperHeight: calc(100vh - var(--margin) * 3 - var(--headerHeight));
+
+    @at-root body.extern & {
+        --wrapperHeight: calc(100vh - var(--margin) * 2);
+    }
+
+    #Wrapper {
+        --panelGridWidth: var(--wrapperWidth);
+        --panelGridHeight: var(--wrapperHeight);
+
+        --popupWidth: var(--wrapperWidth);
+        --popupHeight: var(--wrapperHeight);
+
+        width: var(--wrapperWidth);
+        height: var(--wrapperHeight);
+    
+        #PanelGrid {
+            width: var(--panelGridWidth);
+            height: var(--panelGridHeight);
+    
+            --leftWidgetWidgh: #{scaledWidget(60)};
+            --rightWidgetWidth: #{scaledWidget(220)};
+            --topWidgetHeight: #{scaledWidget(220)};
+            --bottomWidgetHeight: #{scaledWidget(40)};
+        }
+        #PanelOverlay {
+            width: var(--panelGridWidth);
+            height: var(--panelGridHeight);
+        }
+        #Popup {
+            width: var(--popupWidth);
+            height: var(--popupHeight);
+        }
+    }
+}
+
+#Wrapper {
+    #PanelGrid {
+        position: absolute;
+        z-index: 1;
+    }
+    #PanelOverlay {
+        position: absolute;
+        z-index: 2;
+        pointer-events: none;
+    }
+    #Popup {
+        position: absolute;
+        z-index: 3;
+        pointer-events: none;
+    }
+}
+
+#Wrapper {
+    #PanelGrid {
+        display: grid;
+        grid-template-columns: var(--leftWidgetWidgh) var(--rightWidgetWidth);
+        grid-template-rows: var(--topWidgetHeight) var(--bottomWidgetHeight);
+        grid-template-areas:
+            "throttle stick"
+            "misc rudder";
+        justify-content: space-evenly;  // x-axis
+        align-content: center;          // y-axis
+
+        #StickPanel {
+            grid-area: stick;
+        }
+        #RudderPanel {
+            grid-area: rudder;
+        }
+        #ThrottlePanel {
+            grid-area: throttle;
+        }
+        #MiscPanel {
+            grid-area: misc;
+        }
+
+        background-color: rgba(0, 0, 0, 0.1);
+    }
 }
 
 #DevOverlay {
@@ -34,6 +138,8 @@ html, body {
 #ConfigPopup_Container {
     @include fill();
     z-index: 100;
+
+    pointer-events: auto;
 
     background-color: rgba(0, 0, 0, 0.7);
 
@@ -126,6 +232,23 @@ html, body {
     }
 }
 
+#NumberDisp_Simple_Container,
+#NumberDisp_Verbose_Container {
+    display: none;
+}
+
+#NumberDisp_Simple_Container {
+    @include numberDisplayType("simple") {
+        display: inline;
+    }
+}
+#NumberDisp_Verbose_Container {
+    @include numberDisplayType("verbose") {
+        display: flex;
+    }
+}
+
+
 #NumberDisp_Simple_Container {
     opacity: 0.8;
     .bg {
@@ -180,25 +303,25 @@ html, body {
             display: none;
         }
     }
-    &[data-mode=SingleEngine] {
+    @include throttlePanelMode("SingleEngine") {
         .throttle1Container {
             display: inline;
         }
     }
-    &[data-mode=TwinEngine] {
+    @include throttlePanelMode("TwinEngine") {
         .throttle1Container,
         .throttle2Container {
             display: inline;
         }
     }
-    &[data-mode=ThreeEngine] {
+    @include throttlePanelMode("ThreeEngine") {
         .throttle1Container,
         .throttle2Container,
         .throttle3Container {
             display: inline;
         }
     }
-    &[data-mode=FourEngine] {
+    @include throttlePanelMode("FourEngine") {
         .throttle1Container,
         .throttle2Container,
         .throttle3Container,
@@ -206,72 +329,12 @@ html, body {
             display: inline;
         }
     }
-    &[data-mode=PropMix] {
+    @include throttlePanelMode("PropMix") {
         .throttle1Container,
         .propeller1Container,
         .mixture1Container {
             display: inline;
         }
-    }
-}
-
-#InputViewer_Container {
-    overflow: hidden;
-    // --headerHeight: #{scaled(87)};
-
-    // --containerWidth: calc(100vw - var(--contentMargin) * 2);
-    // --containerHeight: calc(100vh - var(--contentMargin) * 2 - var(--headerHeight));
-
-    // We substitute this var from JS since MSFS/CoherentGT's CSS doesn't support `min()` function yet.
-    // --widget-aspect-ratio: calc(280 / 260);
-    // --widgetWidth: min(var(--containerWidth), calc(var(--containerHeight) * var(--widget-aspect-ratio)));
-    --widgetWidth: 100px;  // placeholder
-
-    --panelDim: calc(var(--widgetWidth) * (220 / 280));
-    --throttlePanelWidth: calc(var(--panelDim) * (60 / 220));
-    --rudderPanelHeight:  calc(var(--panelDim) * (40 / 220));
-
-    position: absolute;
-
-    width: var(--containerWidth);
-    height: var(--containerHeight);
-
-    display: grid;
-
-    grid-template-columns: var(--throttlePanelWidth) var(--panelDim);
-    grid-template-rows: var(--panelDim) var(--rudderPanelHeight);
-    grid-template-areas:
-        "throttle stick"
-        "config rudder";
-    justify-content: space-evenly;  // x-axis
-    align-content: center;          // y-axis
-
-    background-color: rgba(0, 0, 0, 0.1);
-    // background-color: blue;
-
-    #OpenConfigPanel {
-        grid-area: config;
-    }
-    #StickPanel {
-        grid-area: stick;
-    }
-    #RudderPanel {
-        grid-area: rudder;
-    }
-    #ThrottlePanel {
-        grid-area: throttle;
-    }
-}
-
-#OpenConfigPanel {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    #OpenConfig {
-        // Default = scaled(60)
-        --width: #{scaled(90)};
-        --height: #{scaled(60)};
     }
 }
 
@@ -316,7 +379,19 @@ toggle-button.togglePropMix {
     }
 }
 
-#InputViewer_Container {
+#MiscPanel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    #OpenConfig {
+        // Default = scaled(60)
+        --width: #{scaled(90)};
+        --height: #{scaled(60)};
+    }
+}
+
+#PanelGrid {
     .grad1, .grad2, .grad3 {
         fill: none;
         stroke: var(--primaryColor);
@@ -419,19 +494,19 @@ toggle-button.togglePropMix {
             }
         }
 
-        &[data-mode=SingleEngine] {
+        @include throttlePanelMode("SingleEngine") {
             @include showThrottleBars(1);
         }
-        &[data-mode=TwinEngine] {
+        @include throttlePanelMode("TwinEngine") {
             @include showThrottleBars(2);
         }
-        &[data-mode=ThreeEngine] {
+        @include throttlePanelMode("ThreeEngine") {
             @include showThrottleBars(3);
         }
-        &[data-mode=FourEngine] {
+        @include throttlePanelMode("FourEngine") {
             @include showThrottleBars(4);
         }
-        &[data-mode=PropMix] {
+        @include throttlePanelMode("PropMix") {
             @include showThrottleBars(3, true);
         }
     }

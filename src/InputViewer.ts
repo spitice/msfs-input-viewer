@@ -20,8 +20,8 @@ class InputViewerElement extends TemplateElement implements IUIElement {
     _isConnected: boolean = false;
 
     _el!: {
-        frame: ingameUiElement,
-        cont: HTMLElement,
+        uiFrame: ingameUiElement,
+        panelGrid: HTMLElement,
         openConf: HTMLElement,
     };
 
@@ -32,11 +32,9 @@ class InputViewerElement extends TemplateElement implements IUIElement {
     connectedCallback() {
         this._isConnected = true;
 
-        const elFrame = document.getElementById( "InputViewer_Frame" )! as ingameUiElement;
-
         const find = ( id: string ) => {
             const query = "#" + id;
-            const el = elFrame.querySelector( query ) as HTMLElement;
+            const el = this.querySelector( query ) as HTMLElement;
             if ( !el ) {
                 throw new Error( query + " not found" );
             }
@@ -80,7 +78,8 @@ class InputViewerElement extends TemplateElement implements IUIElement {
             };
         };
 
-        const elCont            = find( "InputViewer_Container" );
+        const elUIFrame         = find( "InputViewer_UIFrame" ) as ingameUiElement;
+        const elPanelGrid       = find( "PanelGrid" );
         const elOpenConf        = find( "OpenConfig" );
         const elConfCont        = find( "ConfigPopup_Container" );
         const elConfClose       = find( "Config_Close" );
@@ -90,8 +89,8 @@ class InputViewerElement extends TemplateElement implements IUIElement {
         const elConfPropMix     = find( "Config_TogglePropMix" ) as ToggleButtonElement;
 
         this._el = {
-            frame: elFrame,
-            cont: elCont,
+            uiFrame: elUIFrame,
+            panelGrid: elPanelGrid,
             openConf: elOpenConf,
         };
 
@@ -125,7 +124,8 @@ class InputViewerElement extends TemplateElement implements IUIElement {
         } );
 
         UIElements.el = {
-            frame: elFrame,
+            root: this,
+            uiFrame: elUIFrame,
 
             main: {
                 stick:      find( "StickInputPos" ),
@@ -144,9 +144,6 @@ class InputViewerElement extends TemplateElement implements IUIElement {
             numberSimple: findNumberDisplay( "NumberDisp_Simple_Container" ),
             numberVerbose: findNumberDisplay( "NumberDisp_Verbose_Container" ),
 
-            mainThrottlePanel: find( "ThrottlePanel" ),
-            numberSimpleContainer: find( "NumberDisp_Simple_Container" ),
-            numberVerboseContainer: find( "NumberDisp_Verbose_Container" ),
             confNumericDisp: elConfNumericDisp,
             confQuickHideDuration: elConfQHideDur,
             confPropMix: elConfPropMix,
@@ -165,14 +162,14 @@ class InputViewerElement extends TemplateElement implements IUIElement {
         requestAnimationFrame( updateLoop );
 
 
-        elCont.addEventListener( "dblclick", this._onDoubleClick );
+        elPanelGrid.addEventListener( "dblclick", this._onDoubleClick );
 
         // TODO: Use ToolBarListener for this handlers
         window.addEventListener( "resize", this._onResize );
         // When you close an externalized panel, "resize" event will be emitted
         // before ".extern" is removed from the ingameUi element so we need this
         // listener to approproately update our widget dimension.
-        elFrame.addEventListener( "ToggleExternPanel", this._onResize );
+        elUIFrame.addEventListener( "ToggleExternPanel", this._onResize );
 
         document.addEventListener( "dataStorageReady", this._onStorageReady );
     }
@@ -181,9 +178,9 @@ class InputViewerElement extends TemplateElement implements IUIElement {
         super.disconnectedCallback();
 
         document.addEventListener( "dataStorageReady", this._onStorageReady );
-        this._el.cont.removeEventListener( "dblclick", this._onDoubleClick );
+        this._el.panelGrid.removeEventListener( "dblclick", this._onDoubleClick );
         window.removeEventListener( "resize", this._onResize );
-        this._el.frame.removeEventListener( "ToggleExternPanel", this._onResize );
+        this._el.uiFrame.removeEventListener( "ToggleExternPanel", this._onResize );
 
         UIElements.el = {} as any;
 
@@ -198,36 +195,27 @@ class InputViewerElement extends TemplateElement implements IUIElement {
         // in-game panel window's size here.
         const _style = window.document.documentElement.style;
         
-        const panelWidth = Number( _style.getPropertyValue( "--viewportWidth" ) ); // window.top.innerWidth;
-        const panelHeight = Number( _style.getPropertyValue( "--viewportHeight" ) ); // window.top.innerHeight;
+        const vpWidth = Number( _style.getPropertyValue( "--viewportWidth" ) ); // window.top.innerWidth;
+        const vpHeight = Number( _style.getPropertyValue( "--viewportHeight" ) ); // window.top.innerHeight;
         const screenHeight = Number( _style.getPropertyValue( "--screenHeight" ) );
 
         const scaled = ( v: number ) => screenHeight * v / 2160;
-        const contentMargin = scaled( 6 );
+        const margin = scaled( 6 );
 
-        const headerHeight = scaled( 84 /* height */ + 3 /* margin-bottom */ );
+        const headerHeight = scaled( 84 );
         const isExtern = document.body.classList.contains( "extern" );
 
-        const contWidth = panelWidth - contentMargin * 2;
-        const contHeight = panelHeight - contentMargin * 2 - ( isExtern ? 0 : headerHeight );
+        const wrapperWidth = vpWidth - margin * 2;
+        const wrapperHeight = vpHeight - margin * 2 - ( isExtern ? 0 : ( headerHeight + margin ) );
         
         const widgetAspectRatio = 280 / 260;
         const widgetWidth = Math.min(
-            contWidth,
-            contHeight * widgetAspectRatio
+            wrapperWidth,
+            wrapperHeight * widgetAspectRatio
         );
+        const widgetScale = widgetWidth / 280;
 
-        const contStyle = this._el.cont.style;
-        contStyle.setProperty( "--containerWidth", contWidth + "px" );
-        contStyle.setProperty( "--containerHeight", contHeight + "px" );
-        contStyle.setProperty( "--widgetWidth", widgetWidth + "px" );
-
-        // debugMsg(
-        //     `Is Extern?: ${isExtern}\n` +
-        //     `Panel Width: ${panelWidth}\n` +
-        //     `Panel Height: ${panelHeight}\n` +
-        //     `Widget Width: ${widgetWidth}`
-        // );
+        this._el.uiFrame.style.setProperty( "--widgetScale", widgetScale + "px" );
     };
 
     _onStorageReady = ( e?: Event ) => {

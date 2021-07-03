@@ -108,9 +108,7 @@ export function getThrottlePanelMode( enablePropMixBar: boolean, numEngines: num
 }
 
 export function updateThrottlePanelMode( mode: ReturnType<typeof getThrottlePanelMode> ) {
-    const { el } = UIElements;
-    el.mainThrottlePanel.setAttribute( "data-mode", mode );
-    el.numberSimpleContainer.setAttribute( "data-mode", mode );
+    UIElements.el.root.setAttribute( "data-throttle-panel-mode", mode );;
     console.log( "[updateThrottlePanelMode()] mode: " + mode );
 }
 
@@ -125,12 +123,9 @@ function updateListCurrentValue( el: NewListButtonElement, value: number ) {
 }
 
 export function updateNumberDisplayType( type: NumberDisplayType ) {
-    const { el } = UIElements;
+    UIElements.el.root.setAttribute( "data-number-display-type", type );
 
-    el.numberSimpleContainer.classList.toggle( "hide", type !== "simple" );
-    el.numberVerboseContainer.classList.toggle( "hide", type !== "verbose" );
-
-    const { confNumericDisp } = el;
+    const { confNumericDisp } = UIElements.el;
     const nextValue = confNumericDisp.choices.indexOf( type );
     if ( nextValue < 0 ) {
         throw new Error( "[updateNumberDisplayType] Invalid number display type: " + type );
@@ -155,10 +150,10 @@ export function updateAircraftName( name: string ) {
 }
 
 export function quickHidePanel( duration: number ) {
-    const { frame } = UIElements.el;
-    frame.visible = false;
+    const { uiFrame } = UIElements.el;
+    uiFrame.visible = false;
     setTimeout( () => {
-        frame.visible = true;
+        uiFrame.visible = true;
     }, duration * 1000 );
 }
 

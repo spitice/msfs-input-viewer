@@ -19,15 +19,13 @@ export type NumberDisplayElements = Elements<SimVarAxisInput>;
 
 export class UIElements {
     static el: {
-        frame: ingameUiElement;
+        root: HTMLElement;
+        uiFrame: ingameUiElement;
 
         main: Elements<StickInput> & Elements<RudAxis> & Elements_Bar;
         numberSimple: NumberDisplayElements;
         numberVerbose: NumberDisplayElements;
 
-        mainThrottlePanel: HTMLElement;
-        numberSimpleContainer: HTMLElement;
-        numberVerboseContainer: HTMLElement;
         confNumericDisp: NewListButtonElement;
         confQuickHideDuration: NewListButtonElement;
         confPropMix: ToggleButtonElement;
