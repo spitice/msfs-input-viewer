@@ -84,6 +84,7 @@ class InputViewerElement extends TemplateElement implements IUIElement {
         const elConfCont        = find( "ConfigPopup_Container" );
         const elConfClose       = find( "Config_Close" );
         const elConfScroll      = find( "Config_ScrollCont" );
+        const elConfAutoHide    = find( "Config_AutoHideHeader" ) as ToggleButtonElement;
         const elConfPanels      = find( "Config_Panels" ) as NewListButtonElement;
         const elConfNumericDisp = find( "Config_NumericDisp" ) as NewListButtonElement;
         const elConfQHideDur    = find( "Config_QuickHideDuration" ) as NewListButtonElement;
@@ -105,10 +106,13 @@ class InputViewerElement extends TemplateElement implements IUIElement {
             elConfCont.classList.add( "hide" );
         } );
 
+        elConfAutoHide.addEventListener( "OnValidate", e => {
+            store.dispatch( A.setAutoHideHeader( elConfAutoHide.getValue() ) );
+        } );
+
         makePropMixToggleButton( elConfPropMix );
         elConfPropMix.addEventListener( "OnValidate", e => {
-            const toggle = e.target as any as { getValue: () => boolean };
-            store.dispatch( A.setEnablePropMixBar( toggle.getValue() ) );
+            store.dispatch( A.setEnablePropMixBar( elConfPropMix.getValue() ) );
         } );
 
         elConfPanels.addEventListener( "OnValidate", e => {
@@ -148,6 +152,7 @@ class InputViewerElement extends TemplateElement implements IUIElement {
             numberSimple: findNumberDisplay( "NumberDisp_Simple_Container" ),
             numberVerbose: findNumberDisplay( "NumberDisp_Verbose_Container" ),
 
+            confAutoHideHeader: elConfAutoHide,
             confPanels: elConfPanels,
             confNumericDisp: elConfNumericDisp,
             confQuickHideDuration: elConfQHideDur,

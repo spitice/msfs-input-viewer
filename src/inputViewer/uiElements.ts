@@ -26,6 +26,7 @@ export class UIElements {
         numberSimple: NumberDisplayElements;
         numberVerbose: NumberDisplayElements;
 
+        confAutoHideHeader: ToggleButtonElement;
         confPanels: NewListButtonElement;
         confNumericDisp: NewListButtonElement;
         confQuickHideDuration: NewListButtonElement;

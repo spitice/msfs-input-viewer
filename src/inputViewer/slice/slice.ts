@@ -43,6 +43,7 @@ const initialState: InputViewerState = {
     },
 
     config: {
+        autoHideHeader: false,
         panels: "all",
         numberDisplayType: "none",
         quickHideDuration: 2,
@@ -65,6 +66,9 @@ const inputViewerSlice = createSlice({
             state.aircraft = payload;
         },
 
+        setAutoHideHeader: ( state, { payload }: PA<boolean> ) => {
+            state.config.autoHideHeader = payload;
+        },
         setPanelsToShow: ( state, { payload }: PA<PanelsToShow> ) => {
             state.config.panels = payload;
         },

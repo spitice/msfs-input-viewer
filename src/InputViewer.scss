@@ -5,6 +5,11 @@
     @return calc(var(--widgetScale) * #{$px});
 }
 
+@mixin externalized() {
+    @at-root body.extern & {
+        @content;
+    }
+}
 @mixin panelsToShow($value) {
     @at-root #InputViewer[data-panels=#{$value}] & {
         @content;
@@ -43,8 +48,24 @@ html, body {
     box-sizing: inherit;
 }
 
-#InputViewer_UIFrame .ingameUiWrapper {
-    position: relative;
+#InputViewer_UIFrame {
+    z-index: 0;
+    
+    > ingame-ui-header {
+        z-index: -1;
+        position: relative;
+
+        transition: opacity var(--animationTimeFast) var(--animationEffect);
+    }
+
+    > ui-element {
+        z-index: -2;
+        position: relative;
+    }
+
+    #InputViewer_UIFrame .ingameUiWrapper {
+        position: relative;
+    }
 }
 
 #InputViewer {
@@ -54,10 +75,38 @@ html, body {
     --margin: #{scaled(6)};
 
     --wrapperWidth: calc(100vw - var(--margin) * 2);
-    --wrapperHeight: calc(100vh - var(--margin) * 3 - var(--headerHeight));
 
-    @at-root body.extern & {
-        --wrapperHeight: calc(100vh - var(--margin) * 2);
+    --wrapperHeightWithoutHeader: calc(100vh - var(--margin) * 2);
+    --wrapperHeightWithHeader: calc(var(--wrapperHeightWithoutHeader) - var(--headerHeight) - var(--margin));
+
+    --wrapperHeight: var(--wrapperHeightWithHeader);
+    --wrapperOffsetY: 0px;
+
+    @include externalized() {
+        --wrapperHeight: var(--wrapperHeightWithoutHeader);
+    }
+    &[data-auto-hide-header=true] {
+        --wrapperHeight: var(--wrapperHeightWithoutHeader);
+
+        @at-root body:not(.extern) & {
+            --wrapperOffsetY: calc(0px - var(--headerHeight) - var(--margin));
+        }
+
+        ingame-ui-header {
+            opacity: 0;
+            transition-delay: 0.2s;
+        }
+        ingame-ui.minimized {
+            ingame-ui-header {
+                opacity: 1;
+            }
+        }
+        @at-root body:hover & {
+            ingame-ui-header {
+                opacity: 1;
+                transition-delay: 0.0s;
+            }
+        }
     }
 
     #Wrapper {
@@ -65,10 +114,11 @@ html, body {
         --panelGridHeight: var(--wrapperHeight);
 
         --popupWidth: var(--wrapperWidth);
-        --popupHeight: var(--wrapperHeight);
+        --popupHeight: calc(var(--wrapperHeight) + var(--wrapperOffsetY));
 
         width: var(--wrapperWidth);
         height: var(--wrapperHeight);
+        top: var(--wrapperOffsetY);
     
         #PanelGrid {
             width: var(--panelGridWidth);
@@ -86,11 +136,15 @@ html, body {
         #Popup {
             width: var(--popupWidth);
             height: var(--popupHeight);
+            top: calc(0px - var(--wrapperOffsetY));
         }
     }
 }
 
 #Wrapper {
+    position: absolute;
+    z-index: 0;
+
     #PanelGrid {
         position: absolute;
         z-index: 1;

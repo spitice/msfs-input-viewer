@@ -38,6 +38,7 @@ import {
     getThrottlePanelMode,
     quickHidePanel,
     updateAircraftName,
+    updateAutoHideHeader,
     updateEnablePropMixBar,
     updateHorizontalBar,
     updateNumberDisplaySimple,
@@ -74,6 +75,7 @@ const loadConfigGeneral: E = action$ => action$.pipe(
     } ),
     mergeMap( () => of(
         A.setLoadingConfig( true ),
+        A.setAutoHideHeader( config.getData<string>( config.AUTO_HIDE_HEADER, "false" ) === "true" ),
         A.setPanelsToShow( config.getData<PanelsToShow>( config.PANELS, "all" ) ),
         A.setNumberDisplayType( config.getData<NumberDisplayType>( config.NUMBER_DISPLAY_MODE, "none" ) ),
         A.setQuickHideDuration( config.getQuickHideDuration() ),
@@ -103,6 +105,13 @@ const loadConfigAircraft: E = ( action$, state$ ) => action$.pipe(
     ) ),
 );
 
+const saveAutoHideHeader: E = action$ => action$.pipe(
+    filter( A.setAutoHideHeader.match ),
+    tap( ({ payload }) => {
+        config.setData( config.AUTO_HIDE_HEADER, payload.toString() );
+    } ),
+    ignoreElements()
+);
 const savePanelsToShow: E = action$ => action$.pipe(
     filter( A.setPanelsToShow.match ),
     tap( ({ payload }) => {
@@ -270,6 +279,13 @@ const checkThrottlePanelMode: E = ( action$, state$ ) => action$.pipe(
 );
 
 
+const checkAutoHideHeader: E = action$ => action$.pipe(
+    filter( A.setAutoHideHeader.match ),
+    tap( ({ payload }) => {
+        updateAutoHideHeader( payload );
+    } ),
+    map( () => A.updateWidgetScale() ),
+);
 const checkPanelsToShow: E = action$ => action$.pipe(
     filter( A.setPanelsToShow.match ),
     tap( ({ payload }) => {
@@ -311,10 +327,11 @@ const checkAircraftName: E = action$ => action$.pipe(
 const handleUpdateWidgetScale: E = ( action$, state$ ) => action$.pipe(
     filter( A.updateWidgetScale.match ),
     withLatestFrom( state$ ),
-    tap( ([ _action, state ]) => {
+    tap( ([ _action, { config } ]) => {
         updateWidgetScale(
-            state.config.panels,
-            state.config.numberDisplayType
+            config.autoHideHeader,
+            config.panels,
+            config.numberDisplayType
         );
     } ),
     ignoreElements(),
@@ -335,9 +352,14 @@ const logActions: E = action$ => action$.pipe(
     filter( isAnyOf(
         A.setStorageReady,
         A.setLoadingConfig,
+
+        // General configs
+        A.setAutoHideHeader,
         A.setPanelsToShow,
         A.setNumberDisplayType,
         A.setQuickHideDuration,
+
+        // Aircraft-specific configs
         A.setEnablePropMixBar,
     ) ),
     tap( action => console.log( action ) ),
@@ -352,6 +374,7 @@ const epics: E[] = [
     updateLoadingState,
     loadConfigGeneral,
     loadConfigAircraft,
+    saveAutoHideHeader,
     savePanelsToShow,
     saveNumberDisplayType,
     saveQuickHideDuration,
@@ -382,6 +405,7 @@ const epics: E[] = [
 
     // Configuration handlers
     checkThrottlePanelMode,
+    checkAutoHideHeader,
     checkPanelsToShow,
     checkNumberDisplayType,
     checkQuickHideDuration,

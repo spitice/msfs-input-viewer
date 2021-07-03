@@ -30,6 +30,7 @@
 <body class="border-box">
     <ingamepanel-input-viewer
         id="InputViewer"
+        data-auto-hide-header="false"
         data-panels="all"
         data-number-display-type="none"
         data-throttle-panel-mode="PropMix"
@@ -334,6 +335,10 @@
                         <virtual-scroll id="Config_ScrollCont" direction="y" class="condensed">
                             <div class="condensedPanel">
                                 <div class="sectionTitle">General</div>
+                                <toggle-button
+                                    id="Config_AutoHideHeader"
+                                    title="Auto-hide Title Bar"
+                                ></toggle-button>
                                 <new-list-button
                                     id="Config_NumericDisp"
                                     title="Numeric Display"

@@ -28,9 +28,13 @@ export type PanelsToShow = "all" | "throttle";
 export type NumberDisplayType = "none" | "simple" | "verbose";
 
 export interface Config {
+    // General
+    autoHideHeader: boolean;
     panels: PanelsToShow;
     numberDisplayType: NumberDisplayType;
     quickHideDuration: number;
+
+    // Aircraft-specific
     enablePropMixBar: boolean;
 }
 

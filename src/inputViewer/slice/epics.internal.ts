@@ -113,6 +113,12 @@ export function updateThrottlePanelMode( mode: ReturnType<typeof getThrottlePane
     console.log( "[updateThrottlePanelMode] mode: " + mode );
 }
 
+function setToggleValue( el: ToggleButtonElement, value: boolean ) {
+    if ( el.getValue() !== value ) {
+        el.setValue( value );
+    }
+}
+
 function setListCurrentValue( el: NewListButtonElement, value: number ) {
     if ( value !== el.getCurrentValue() ) {
         if ( !el.valueElem ) {
@@ -130,6 +136,11 @@ function setListCurrentChoice( el: NewListButtonElement, choice: string ) {
     return setListCurrentValue( el, value );
 }
 
+export function updateAutoHideHeader( value: boolean ) {
+    UIElements.el.root.setAttribute( "data-auto-hide-header", value.toString() );
+    setToggleValue( UIElements.el.confAutoHideHeader, value );
+}
+
 export function updatePanelsToShow( type: PanelsToShow ) {
     UIElements.el.root.setAttribute( "data-panels", type );
     setListCurrentChoice( UIElements.el.confPanels, type );
@@ -145,10 +156,7 @@ export function updateQuickHideDuration( duration: number ) {
 }
 
 export function updateEnablePropMixBar( value: boolean ) {
-    const { confPropMix } = UIElements.el;
-    if ( confPropMix.getValue() != value ) {
-        confPropMix.setValue( value );
-    }
+    setToggleValue( UIElements.el.confPropMix, value );
 }
 
 export function updateAircraftName( name: string ) {
@@ -164,6 +172,7 @@ export function quickHidePanel( duration: number ) {
 }
 
 export function updateWidgetScale(
+    autoHideHeader: boolean,
     panelsToShow: PanelsToShow,
     numberDispType: NumberDisplayType
 ) {
@@ -178,9 +187,10 @@ export function updateWidgetScale(
 
     const headerHeight = scaled( 84 );
     const isExtern = document.body.classList.contains( "extern" );
+    const hasHeader = !isExtern && !autoHideHeader;
 
     const wrapperWidth = vpWidth - margin * 2;
-    const wrapperHeight = vpHeight - margin * 2 - ( isExtern ? 0 : ( headerHeight + margin ) );
+    const wrapperHeight = vpHeight - margin * 2 - ( hasHeader ? ( headerHeight + margin ) : 0 );
     
     let widgetPrescaledWidth = 280;
     let widgetPrescaledHeight = 260;
@@ -200,10 +210,12 @@ export function updateWidgetScale(
     const widgetScale = widgetWidth / widgetPrescaledWidth;
 
     UIElements.el.uiFrame.style.setProperty( "--widgetScale", widgetScale + "px" );
+    // console.log( "widged scale = " + widgetScale );
 }
 
 
 export namespace config {
+    export const AUTO_HIDE_HEADER       = "AUTO_HIDE_HEADER";
     export const PANELS                 = "PANELS";
     export const NUMBER_DISPLAY_MODE    = "NUMBER_DISPLAY_MODE";
     export const QUICK_HIDE_DURATION    = "QUICK_HIDE_DURATION";
