@@ -263,14 +263,15 @@ export namespace config {
         let value = getData( name, "" );
         if ( value === "" ) {
             console.log( "[getEnablePropMixBar] Using the default value..." );
-            return propMixAircraftMap[modelName];
+            return !!propMixAircraftMap[modelName];  // Cast undefined to false
         }
         return value === "1";
     }
 
     export function setEnablePropMixBar( modelName: string, isEnable: boolean ) {
         const name = ENABLE_PROPMIX_BAR + ":" + modelName;
-        if ( isEnable && modelName in propMixAircraftMap ) {
+        const isEnableByDefault = modelName in propMixAircraftMap;
+        if ( isEnable === isEnableByDefault ) {
             // Remove the current setting
             deleteData( name );
             return;

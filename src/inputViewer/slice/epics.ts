@@ -86,6 +86,7 @@ const loadConfigAircraft: E = ( action$, state$ ) => action$.pipe(
     distinctUntilChanged( shallowEq ),
 
     filter( tuple => tuple[0] ),  // isStorageReady == true
+    filter( tuple => tuple[1] !== "<unknown>" ),
 
     mergeMap( ([ _, model ]) => of(
         A.setLoadingConfig( true ),
