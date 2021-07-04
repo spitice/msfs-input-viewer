@@ -1,4 +1,5 @@
 
+@use "sass:selector";
 @use "./styles/utils" as *;
 
 @function scaledWidget($px) {
@@ -98,7 +99,12 @@ html, body {
         }
         ingame-ui.minimized {
             ingame-ui-header {
-                opacity: 1;
+                opacity: 1;  // When minimized, the header should always be visible
+            }
+        }
+        @at-root #{selector.unify(&, "#InputViewer[data-config-opened=true]")} {
+            ingame-ui-header {
+                opacity: 1;  // While the config panel is opened, the header should always be visible
             }
         }
         @at-root body:hover & {
@@ -245,6 +251,10 @@ html, body {
 
     display: flex;
     flex-direction: column;
+
+    @at-root #InputViewer:not([data-config-opened=true]) & {
+        display: none;
+    }
 
     font-weight: bold;
 

@@ -81,7 +81,6 @@ class InputViewerElement extends TemplateElement implements IUIElement {
         const elUIFrame         = find( "InputViewer_UIFrame" ) as ingameUiElement;
         const elPanelGrid       = find( "PanelGrid" );
         const elOpenConf        = find( "OpenConfig" );
-        const elConfCont        = find( "ConfigPopup_Container" );
         const elConfClose       = find( "Config_Close" );
         const elConfScroll      = find( "Config_ScrollCont" );
         const elConfAutoHide    = find( "Config_AutoHideHeader" ) as ToggleButtonElement;
@@ -98,12 +97,12 @@ class InputViewerElement extends TemplateElement implements IUIElement {
 
         elOpenConf.addEventListener( "OnValidate", e => {
             // Open the config popup
-            elConfCont.classList.remove( "hide" );
+            this.setAttribute("data-config-opened", "true");
             (elConfScroll as any).delayedUpdateSizes();
         } );
         elConfClose.addEventListener( "OnValidate", e => {
             // Close the config popup
-            elConfCont.classList.add( "hide" );
+            this.setAttribute("data-config-opened", "false");
         } );
 
         elConfAutoHide.addEventListener( "OnValidate", e => {
