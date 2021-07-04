@@ -164,6 +164,11 @@ export function updateAircraftName( name: string ) {
 }
 
 export function quickHidePanel( duration: number ) {
+    const isExtern = document.body.classList.contains( "extern" );
+    if ( isExtern ) {
+        return;
+    }
+
     const { uiFrame } = UIElements.el;
     uiFrame.visible = false;
     setTimeout( () => {
