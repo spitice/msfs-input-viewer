@@ -311,6 +311,10 @@ html, body {
             font-weight: normal;
         }
     }
+
+    #Config_Close {
+        margin: var(--halfMargin);
+    }
 }
 
 #NumberDisp_Verbose_Container {
@@ -466,15 +470,15 @@ html, body {
 toggle-button.togglePropMix {  
     @function handleOffset($factor) {
         // More factor, more left
-        @return var(--leftPos, #{scaled(56 - 12 * $factor)});
+        @return var(--leftPos, #{scaled(72 - 12 * $factor - 4)});
     }
 
     icon-element {
         position: absolute;
 
         top: scaled(2);
-        width: scaled(36);
-        height: scaled(36);
+        width: scaled(48);
+        height: scaled(48);
 
         transition: basic-transition(left, opacity);
 
