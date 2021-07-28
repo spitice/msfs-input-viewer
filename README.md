@@ -110,6 +110,11 @@ https://github.com/spitice/msfs-input-viewer
 
 ## Changelogs
 
+### v1.2.1 (July 28, 2021)
+
+- Now compatible with Sim Update 5
+- Improve performance on updating SimVars by using new API
+
 ### v1.2.0 (July 4, 2021)
 
 - Add throttle-only mode

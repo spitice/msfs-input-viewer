@@ -1,4 +1,4 @@
-<AssetPackage Name="spitice-ingamepanels-inputviewer" ReleaseNotes="PackageDefinitions\spitice-ingamepanels-inputviewer\ReleaseNotes.xml" Version="1.2.0">
+<AssetPackage Name="spitice-ingamepanels-inputviewer" ReleaseNotes="PackageDefinitions\spitice-ingamepanels-inputviewer\ReleaseNotes.xml" Version="1.2.1">
 	<ItemSettings>
 		<ContentType>MISC</ContentType>
 		<Title>Input Viewer</Title>

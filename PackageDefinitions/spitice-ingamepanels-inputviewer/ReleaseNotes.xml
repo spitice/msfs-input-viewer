@@ -1,3 +1,5 @@
+<ReleaseNote Version="1.2.1" Date="2021-7-28">- Now compatible with Sim Update 5
+- Improve performance on updating SimVars by using new API</ReleaseNote>
 <ReleaseNote Version="1.2.0" Date="2021-7-4">- Add throttle-only mode
 - Add auto-hide title bar
 - Zero values are now grayed out in Simple Number Display
