@@ -85,15 +85,24 @@ declare global {
     class SimVar {
         static IsReady(): boolean;
 
+        /** @deprecated */
         static GetSimVarValue<
             TName extends SimVarName,
             TReturn extends SimVarNameTypeMap[TName] = SimVarNameTypeMap[TName]
         >(
             name: TName, unit: SimVarUnit, dataSource?: string
         ): TReturn;
+        /** @deprecated */
         static GetSimVarValue<T>(
             name: SimVarName, unit: SimVarUnit, dataSource?: string
         ): T;
+
+        static GetRegisteredId(
+            name: SimVarName, unit: SimVarUnit, dataSource: string
+        ): number;
+
+        static GetSimVarValueFastReg( registeredID: number ): number;
+        static GetSimVarValueFastRegString( registeredID: number ): string;
     }
 
     // dataStorage.js

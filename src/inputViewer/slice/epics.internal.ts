@@ -14,32 +14,73 @@ import {
     ThrottleAxis,
 } from "./models";
 
+type SimVarWatcherName = keyof InputData | keyof AircraftData;
+
+const g_simVarWatchers: {
+    [key in SimVarWatcherName]: number
+} = {
+    aileron: -1,
+    elevator: -1,
+    rudder: -1,
+    aileronTrim: -1,
+    elevatorTrim: -1,
+    rudderTrim: -1,
+    brakeLeft: -1,
+    brakeRight: -1,
+    throttle1: -1,
+    throttle2: -1,
+    throttle3: -1,
+    throttle4: -1,
+    propeller1: -1,
+    mixture1: -1,
+
+    model: -1,
+    name: -1,
+    numEngines: -1,
+};
+
+function getSimVarRegId( watcherName: SimVarWatcherName, name: SimVarName, unit: SimVarUnit ) {
+    let regId = g_simVarWatchers[watcherName];
+    if ( regId < 0 ) {
+        regId = SimVar.GetRegisteredId( name, unit, "" );
+        g_simVarWatchers[watcherName] = regId;
+    }
+    return regId;
+}
+
+function getSimVar( watcherName: SimVarWatcherName, name: SimVarName, unit: SimVarUnit ) {
+    return SimVar.GetSimVarValueFastReg( getSimVarRegId( watcherName, name, unit ) );
+}
+function getSimVarString( watcherName: SimVarWatcherName, name: SimVarName, unit: SimVarUnit ) {
+    return SimVar.GetSimVarValueFastRegString( getSimVarRegId( watcherName, name, unit ) );
+}
+
 export function getInputData(): InputData {
     return {
-        aileron:        SimVar.GetSimVarValue( "AILERON POSITION",      "position" ),
-        elevator:       SimVar.GetSimVarValue( "ELEVATOR POSITION",     "position" ),
-        rudder:         SimVar.GetSimVarValue( "RUDDER POSITION",       "position" ),
-        aileronTrim:    SimVar.GetSimVarValue( "AILERON TRIM PCT",      "percent over 100" ),
-        elevatorTrim:   SimVar.GetSimVarValue( "ELEVATOR TRIM PCT",     "percent over 100" ),
-        rudderTrim:     SimVar.GetSimVarValue( "RUDDER TRIM PCT",       "percent over 100" ),
+        aileron:        getSimVar( "aileron",       "AILERON POSITION",      "position" ),
+        elevator:       getSimVar( "elevator",      "ELEVATOR POSITION",     "position" ),
+        rudder:         getSimVar( "rudder",        "RUDDER POSITION",       "position" ),
+        aileronTrim:    getSimVar( "aileronTrim",   "AILERON TRIM PCT",      "percent over 100" ),
+        elevatorTrim:   getSimVar( "elevatorTrim",  "ELEVATOR TRIM PCT",     "percent over 100" ),
+        rudderTrim:     getSimVar( "rudderTrim",    "RUDDER TRIM PCT",       "percent over 100" ),
 
-        brakeLeft:      SimVar.GetSimVarValue( "BRAKE LEFT POSITION",   "position" ),
-        brakeRight:     SimVar.GetSimVarValue( "BRAKE RIGHT POSITION",  "position" ),
+        brakeLeft:      getSimVar( "brakeLeft",     "BRAKE LEFT POSITION",   "position" ),
+        brakeRight:     getSimVar( "brakeRight",    "BRAKE RIGHT POSITION",  "position" ),
 
-        throttle1:      SimVar.GetSimVarValue( "GENERAL ENG THROTTLE LEVER POSITION:1",     "position" ),
-        throttle2:      SimVar.GetSimVarValue( "GENERAL ENG THROTTLE LEVER POSITION:2",     "position" ),
-        throttle3:      SimVar.GetSimVarValue( "GENERAL ENG THROTTLE LEVER POSITION:3",     "position" ),
-        throttle4:      SimVar.GetSimVarValue( "GENERAL ENG THROTTLE LEVER POSITION:4",     "position" ),
-        propeller1:     SimVar.GetSimVarValue( "GENERAL ENG PROPELLER LEVER POSITION:1",    "position" ),
-        mixture1:       SimVar.GetSimVarValue( "GENERAL ENG MIXTURE LEVER POSITION:1",      "position" ),
+        throttle1:      getSimVar( "throttle1",     "GENERAL ENG THROTTLE LEVER POSITION:1",     "position" ),
+        throttle2:      getSimVar( "throttle2",     "GENERAL ENG THROTTLE LEVER POSITION:2",     "position" ),
+        throttle3:      getSimVar( "throttle3",     "GENERAL ENG THROTTLE LEVER POSITION:3",     "position" ),
+        throttle4:      getSimVar( "throttle4",     "GENERAL ENG THROTTLE LEVER POSITION:4",     "position" ),
+        propeller1:     getSimVar( "propeller1",    "GENERAL ENG PROPELLER LEVER POSITION:1",    "position" ),
+        mixture1:       getSimVar( "mixture1",      "GENERAL ENG MIXTURE LEVER POSITION:1",      "position" ),
     };
 }
 
 export function getAircraftData(): AircraftData {
     return {
-        model:      SimVar.GetSimVarValue( "ATC MODEL", "string" ),
-        name:       SimVar.GetSimVarValue( "TITLE", "string" ),
-        numEngines: SimVar.GetSimVarValue( "NUMBER OF ENGINES", "number" ),
+        model:      getSimVarString( "model",   "ATC MODEL",    "string" ),
+        name:       getSimVarString( "name",    "TITLE",        "string" ),
+        numEngines: getSimVar( "numEngines", "NUMBER OF ENGINES", "number" ),
     };
 }
 
