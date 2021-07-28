@@ -210,7 +210,13 @@ class InputViewerElement extends TemplateElement implements IUIElement {
     };
 
     _onUpdate() {
-        if ( !SimVar.IsReady() ) {
+        try {
+            if ( !SimVar.IsReady() ) {
+                // AS of Sim Update 5, this function causes an error when SimVar is not ready
+                return;
+            }
+        } catch (e) {
+            // Can't find variable: simvar
             return;
         }
         store.dispatch( A.fetchSimVar() );
