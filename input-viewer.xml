@@ -1,8 +1,11 @@
-<Project Version="2" Name="input-viewer" FolderName="Packages">
+<?xml version="1.0" encoding="utf-8"?>
+<Project Version="2" Name="input-viewer" FolderName="Packages" PublishingGroupFolderName="PublishingGroupsContent" MetadataFolderName="PackagesMetadata" PublishingGroupMetadataFolderName="PublishingGroupsMetadata">
 	<OutputDirectory>.</OutputDirectory>
 	<TemporaryOutputDirectory>_PackageInt</TemporaryOutputDirectory>
+	<PublishingGroupTemporaryOutputDirectory>_PublishingGroupInt</PublishingGroupTemporaryOutputDirectory>
 	<Packages>
 		<Package>PackageDefinitions\spitice-ingamepanels-inputviewer.xml</Package>
 	</Packages>
+	<PublishingGroups/>
 </Project>
 

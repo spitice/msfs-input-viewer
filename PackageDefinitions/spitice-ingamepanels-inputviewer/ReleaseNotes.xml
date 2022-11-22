@@ -1,13 +1,16 @@
-<ReleaseNote Version="1.2.1" Date="2021-7-28">- Now compatible with Sim Update 5
+<ReleaseNotes>
+	<ReleaseNote Version="1.2.1" Date="2021-7-28">- Now compatible with Sim Update 5
 - Improve performance on updating SimVars by using new API</ReleaseNote>
-<ReleaseNote Version="1.2.0" Date="2021-7-4">- Add throttle-only mode
+	<ReleaseNote Version="1.3.0" Date="2022-11-22">- Add support for helicopters added in Sim Update 11</ReleaseNote>
+	<ReleaseNote Version="1.2.0" Date="2021-7-4">- Add throttle-only mode
 - Add auto-hide title bar
 - Zero values are now grayed out in Simple Number Display
 - Fix behavior on saving PropMix option
 - Fix to prevent quick-hide while panel is externalized</ReleaseNote>
-<ReleaseNote Version="1.1.0" Date="2021-6-27">- Add config panel and auto-save config
+	<ReleaseNote Version="1.1.0" Date="2021-6-27">- Add config panel and auto-save config
 - Add simple and verbose number display
 - Add quick hide feature
 - Propeller/Mixture Bar will be automatically set for vanilla aircrafts in Standard edition
 - Lower the minimum size of the panel</ReleaseNote>
+</ReleaseNotes>
 
