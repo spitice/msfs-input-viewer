@@ -4,6 +4,7 @@ import { UIElements } from "../uiElements";
 import {
     AircraftData,
     BrakeAxis,
+    Category,
     InputData,
     NumberDisplayType,
     PanelsToShow,
@@ -34,6 +35,7 @@ const g_simVarWatchers: {
     propeller1: -1,
     mixture1: -1,
 
+    category: -1,
     model: -1,
     name: -1,
     numEngines: -1,
@@ -48,14 +50,28 @@ function getSimVarRegId( watcherName: SimVarWatcherName, name: SimVarName, unit:
     return regId;
 }
 
-function getSimVar( watcherName: SimVarWatcherName, name: SimVarName, unit: SimVarUnit ) {
-    return SimVar.GetSimVarValueFastReg( getSimVarRegId( watcherName, name, unit ) );
+function getSimVar( watcherName: SimVarWatcherName, name: SimVarName | string, unit: SimVarUnit ) {
+    return SimVar.GetSimVarValueFastReg( getSimVarRegId( watcherName, name as SimVarName, unit ) );
 }
 function getSimVarString( watcherName: SimVarWatcherName, name: SimVarName, unit: SimVarUnit ) {
     return SimVar.GetSimVarValueFastRegString( getSimVarRegId( watcherName, name, unit ) );
 }
 
-export function getInputData(): InputData {
+function sanitizeCategory( categoryRaw: string ): Category {
+    if ( categoryRaw.toLowerCase() === "helicopter" ) {
+        return "helicopter";
+    }
+    return "airplane";
+}
+
+export function getInputData( category: Category ) {
+    if ( category === "helicopter" ) {
+        return getInputDataHelicopter();
+    }
+    return getInputDataAirplane();
+}
+
+function getInputDataAirplane(): InputData {
     return {
         aileron:        getSimVar( "aileron",       "AILERON POSITION",      "position" ),
         elevator:       getSimVar( "elevator",      "ELEVATOR POSITION",     "position" ),
@@ -76,12 +92,124 @@ export function getInputData(): InputData {
     };
 }
 
+function getInputDataHelicopter(): InputData {
+    return {
+        aileron:        getSimVar( "aileron",       "YOKE X POSITION LINEAR",       "percent over 100" ),
+        elevator:       getSimVar( "elevator",      "YOKE Y POSITION",              "percent over 100" ),
+        rudder:         getSimVar( "rudder",        "TAIL ROTOR PEDAL POSITION",    "percent over 100" ),
+        aileronTrim:    getSimVar( "aileronTrim",   "ROTOR LATERAL TRIM PCT",       "percent over 100" ),
+        elevatorTrim:   getSimVar( "elevatorTrim",  "ROTOR LONGITUDINAL TRIM PCT",  "percent over 100" ),
+        rudderTrim:     getSimVar( "rudderTrim",    "RUDDER TRIM PCT",              "percent over 100" ),  // Not used
+
+        brakeLeft:      getSimVar( "brakeLeft",     "ROTOR BRAKE HANDLE POS",   "percent over 100" ),
+        brakeRight:     getSimVar( "brakeRight",    "ROTOR BRAKE HANDLE POS",   "percent over 100" ),
+
+        throttle1:      getSimVar( "throttle1",     "COLLECTIVE POSITION",      "percent over 100" ),
+        throttle2:      0,
+        throttle3:      0,
+        throttle4:      0,
+        propeller1:     getSimVar( "propeller1",    "GENERAL ENG THROTTLE LEVER POSITION:1",    "position" ),
+        mixture1:       getSimVar( "mixture1",      "GENERAL ENG MIXTURE LEVER POSITION:1",     "position" ),
+    };
+}
+
 export function getAircraftData(): AircraftData {
     return {
+        category:   sanitizeCategory( getSimVarString( "category", "CATEGORY", "string" ) ),
         model:      getSimVarString( "model",   "ATC MODEL",    "string" ),
         name:       getSimVarString( "name",    "TITLE",        "string" ),
         numEngines: getSimVar( "numEngines", "NUMBER OF ENGINES", "number" ),
     };
+}
+
+const NumDispLabels: Record<
+    string,
+    Record<SimVarAxisInput, string | null>
+> = {
+    simple: {
+        aileron: "AIL",
+        elevator: "ELEV",
+        rudder: "RUD",
+        aileronTrim: null,
+        elevatorTrim: null,
+        rudderTrim: null,
+        brakeLeft: "BRK",
+        brakeRight: null,
+        throttle1: "THR",
+        throttle2: "#2",
+        throttle3: "#3",
+        throttle4: "#4",
+        propeller1: "PROP",
+        mixture1: "MIX",
+    },
+    simpleHelicopter: {
+        aileron: "LAT",
+        elevator: "LONG",
+        rudder: "RUD",
+        aileronTrim: null,
+        elevatorTrim: null,
+        rudderTrim: null,
+        brakeLeft: "BRK",
+        brakeRight: null,
+        throttle1: "COLL",
+        throttle2: null,
+        throttle3: null,
+        throttle4: null,
+        propeller1: "THR",
+        mixture1: "MIX",
+    },
+    verbose: {
+        aileron: "Aileron",
+        elevator: "Elevator",
+        rudder: "Rudder",
+        aileronTrim: "Aileron Trim",
+        elevatorTrim: "Elevator Trim",
+        rudderTrim: "Rudder Trim",
+        brakeLeft: "Brake Left",
+        brakeRight: "Brake Right",
+        throttle1: "Throttle 1",
+        throttle2: "Throttle 2",
+        throttle3: "Throttle 3",
+        throttle4: "Throttle 4",
+        propeller1: "Propeller 1",
+        mixture1: "Mixture 1",
+    },
+    verboseHelicopter: {
+        aileron: "Lateral",
+        elevator: "Longitudinal",
+        rudder: "Rudder",
+        aileronTrim: "Lateral Trim",
+        elevatorTrim: "Long. Trim",
+        rudderTrim: "Rudder Trim",
+        brakeLeft: "Rotor Brake",
+        brakeRight: "-",
+        throttle1: "Collective",
+        throttle2: "-",
+        throttle3: "-",
+        throttle4: "-",
+        propeller1: "Throttle",
+        mixture1: "Mixture",
+    },
+};
+
+export function updateCategory( category: Category ) {
+    UIElements.el.root.setAttribute( "data-category", category );
+
+    // Update labels
+    const simpleLabels = category === "airplane"
+        ? NumDispLabels.simple
+        : NumDispLabels.simpleHelicopter;
+    const verboseLabels = category === "airplane"
+        ? NumDispLabels.verbose
+        : NumDispLabels.verboseHelicopter;
+
+    for ( let key_ in simpleLabels ) {
+        const key = key_ as SimVarAxisInput;
+        if ( simpleLabels[key] !== null ) {
+            UIElements.el.numberSimpleLabel[key].textContent = simpleLabels[key];
+        }
+        UIElements.el.numberVerboseLabel[key].textContent = verboseLabels[key];
+    }
 }
 
 export function updateStick( key: StickInput, [x, y]: StickValues ) {
@@ -340,11 +468,14 @@ export namespace config {
         return Math.max( 0, Math.min( 3, value ) );
     }
 
-    export function getEnablePropMixBar( modelName: string ) {
+    export function getEnablePropMixBar( modelName: string, category: Category ) {
         const name = ENABLE_PROPMIX_BAR + ":" + modelName;
         let value = getData( name, "" );
         if ( value === "" ) {
             console.log( "[getEnablePropMixBar] Using the default value..." );
+            if ( category === "helicopter" ) {
+                return true;  // Enable PropMix bar for helicopters by default
+            }
             return !!propMixAircraftMap[modelName];  // Cast undefined to false
         }
         return value === "1";

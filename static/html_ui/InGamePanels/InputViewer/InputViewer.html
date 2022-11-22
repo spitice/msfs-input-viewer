@@ -35,6 +35,7 @@
         data-panels="all"
         data-number-display-type="none"
         data-throttle-panel-mode="PropMix"
+        data-category="airplane"
     >
         <ingame-ui
             id="InputViewer_UIFrame"
@@ -81,7 +82,7 @@
                                         <rect class="primary" x="25" y="0" width="25" height="15" />
                                     </g>
                                     <g class="label" transform="translate(12.5, 7.5)">
-                                        <text class="name" x="0" y="0">THR</text>
+                                        <text class="name throttle1" x="0" y="0">THR</text>
                                         <text class="numberDisp throttle1" x="25" y="0">0</text>
                                     </g>
                                 </g>
@@ -91,7 +92,7 @@
                                         <rect class="primary" x="25" y="0" width="25" height="15" />
                                     </g>
                                     <g class="label" transform="translate(12.5, 7.5)">
-                                        <text class="name" x="0" y="0">#2</text>
+                                        <text class="name throttle2" x="0" y="0">#2</text>
                                         <text class="numberDisp throttle2" x="25" y="0">0</text>
                                     </g>
                                 </g>
@@ -101,7 +102,7 @@
                                         <rect class="primary" x="25" y="0" width="25" height="15" />
                                     </g>
                                     <g class="label" transform="translate(12.5, 7.5)">
-                                        <text class="name" x="0" y="0">#3</text>
+                                        <text class="name throttle3" x="0" y="0">#3</text>
                                         <text class="numberDisp throttle3" x="25" y="0">0</text>
                                     </g>
                                 </g>
@@ -111,7 +112,7 @@
                                         <rect class="primary" x="25" y="0" width="25" height="15" />
                                     </g>
                                     <g class="label" transform="translate(12.5, 7.5)">
-                                        <text class="name" x="0" y="0">#4</text>
+                                        <text class="name throttle4" x="0" y="0">#4</text>
                                         <text class="numberDisp throttle4" x="25" y="0">0</text>
                                     </g>
                                 </g>
@@ -121,7 +122,7 @@
                                         <rect class="propellerPrimary" x="25" y="0" width="25" height="15" />
                                     </g>
                                     <g class="label" transform="translate(12.5, 7.5)">
-                                        <text class="name" x="0" y="0">PROP</text>
+                                        <text class="name propeller1" x="0" y="0">PROP</text>
                                         <text class="numberDisp propeller1" x="25" y="0">0</text>
                                     </g>
                                 </g>
@@ -131,7 +132,7 @@
                                         <rect class="mixturePrimary" x="25" y="0" width="25" height="15" />
                                     </g>
                                     <g class="label" transform="translate(12.5, 7.5)">
-                                        <text class="name" x="0" y="0">MIX</text>
+                                        <text class="name mixture1" x="0" y="0">MIX</text>
                                         <text class="numberDisp mixture1" x="25" y="0">0</text>
                                     </g>
                                 </g>
@@ -145,7 +146,7 @@
                                         <rect class="secondary" x="50" y="0" width="25" height="15" />
                                     </g>
                                     <g class="label" transform="translate(12.5, 7.5)">
-                                        <text class="name" x="0" y="0">AIL</text>
+                                        <text class="name aileron aileronTrim" x="0" y="0">AIL</text>
                                         <text class="numberDisp aileron" x="25" y="0">0</text>
                                         <text class="numberDisp aileronTrim" x="50" y="0">0</text>
                                     </g>
@@ -158,7 +159,7 @@
                                         <rect class="secondary" x="50" y="0" width="25" height="15" />
                                     </g>
                                     <g class="label" transform="translate(12.5, 7.5)">
-                                        <text class="name" x="0" y="0">ELEV</text>
+                                        <text class="name elevator elevatorTrim" x="0" y="0">ELEV</text>
                                         <text class="numberDisp elevator" x="25" y="0">0</text>
                                         <text class="numberDisp elevatorTrim" x="50" y="0">0</text>
                                     </g>
@@ -171,7 +172,7 @@
                                         <rect class="secondary" x="50" y="0" width="25" height="15" />
                                     </g>
                                     <g class="label" transform="translate(12.5, 7.5)">
-                                        <text class="name" x="0" y="0">RUD</text>
+                                        <text class="name rudder rudderTrim" x="0" y="0">RUD</text>
                                         <text class="numberDisp rudder" x="25" y="0">0</text>
                                         <text class="numberDisp rudderTrim" x="50" y="0">0</text>
                                     </g>
@@ -185,7 +186,7 @@
                                     </g>
                                     <g class="label" transform="translate(12.5, 7.5)">
                                         <text class="numberDisp brakeLeft" x="0" y="0">0</text>
-                                        <text class="name" x="25" y="0">BRK</text>
+                                        <text class="name brakeLeft brakeRight" x="25" y="0">BRK</text>
                                         <text class="numberDisp brakeRight" x="50" y="0">0</text>
                                     </g>
                                 </g>
@@ -296,33 +297,33 @@
                 <div id="PanelOverlay">
                     <div id="NumberDisp_Verbose_Container">
                         <div class="numberDispGrid">
-                            <div class="label">Aileron</div>
+                            <div class="label aileron">Aileron</div>
                             <div class="numberDisp aileron">0</div>
-                            <div class="label">Aileron Trim</div>
+                            <div class="label aileronTrim">Aileron Trim</div>
                             <div class="numberDisp aileronTrim">0</div>
-                            <div class="label">Elevator</div>
+                            <div class="label elevator">Elevator</div>
                             <div class="numberDisp elevator">0</div>
-                            <div class="label">Elevator Trim</div>
+                            <div class="label elevatorTrim">Elevator Trim</div>
                             <div class="numberDisp elevatorTrim">0</div>
-                            <div class="label">Rudder</div>
+                            <div class="label rudder">Rudder</div>
                             <div class="numberDisp rudder">0</div>
-                            <div class="label">Rudder Trim</div>
+                            <div class="label rudderTrim">Rudder Trim</div>
                             <div class="numberDisp rudderTrim">0</div>
-                            <div class="label">Brake Left</div>
+                            <div class="label brakeLeft">Brake Left</div>
                             <div class="numberDisp brakeLeft">0</div>
-                            <div class="label">Brake Right</div>
+                            <div class="label brakeRight">Brake Right</div>
                             <div class="numberDisp brakeRight">0</div>
-                            <div class="label">Throttle 1</div>
+                            <div class="label throttle1">Throttle 1</div>
                             <div class="numberDisp throttle1">0</div>
-                            <div class="label">Throttle 2</div>
+                            <div class="label throttle2">Throttle 2</div>
                             <div class="numberDisp throttle2">0</div>
-                            <div class="label">Throttle 3</div>
+                            <div class="label throttle3">Throttle 3</div>
                             <div class="numberDisp throttle3">0</div>
-                            <div class="label">Throttle 4</div>
+                            <div class="label throttle4">Throttle 4</div>
                             <div class="numberDisp throttle4">0</div>
-                            <div class="label">Propeller 1</div>
+                            <div class="label propeller1">Propeller 1</div>
                             <div class="numberDisp propeller1">0</div>
-                            <div class="label">Mixture 1</div>
+                            <div class="label mixture1">Mixture 1</div>
                             <div class="numberDisp mixture1">0</div>
                         </div>
                     </div>

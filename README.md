@@ -26,8 +26,16 @@ This input viewer covers the following input axes:
 - Throttle #1/2/3/4
 - Propeller RPM #1
 - Mixture #1
+- (Prop RPM #2-4 and Mixture #2-4 are not included)
 
-Prop RPM #2-4 and Mixture #2-4 are not included.
+for helicopters:
+
+- Cyclic input/trim position
+- Rudder (anti-torque pedals) position
+- Collective position
+- Throttle
+- Mixture
+- Rotor brake
 
 
 ## Installation
@@ -109,6 +117,10 @@ https://github.com/spitice/msfs-input-viewer
 - [msfs-webui-devkit](https://github.com/dga711/msfs-webui-devkit)
 
 ## Changelogs
+
+### v1.3.0 (November 22, 2022)
+
+- Add support for helicopters added in Sim Update 11
 
 ### v1.2.1 (July 28, 2021)
 

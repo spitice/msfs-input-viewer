@@ -24,6 +24,7 @@ import {
 import { shallowEq } from "../utils";
 import {
     AilElevAxis,
+    AircraftData,
     InputViewerState,
     NumberDisplayType,
     PanelsToShow,
@@ -39,6 +40,7 @@ import {
     quickHidePanel,
     updateAircraftName,
     updateAutoHideHeader,
+    updateCategory,
     updateEnablePropMixBar,
     updateHorizontalBar,
     updateNumberDisplaySimple,
@@ -91,16 +93,16 @@ const loadConfigAircraft: E = ( action$, state$ ) => action$.pipe(
     withLatestFrom( state$ ),
     map( ([ _action, state ]) => ([
         state.app.isStorageReady,
-        state.aircraft.model
-    ] as [boolean, string]) ),
+        state.aircraft,
+    ] as [boolean, AircraftData]) ),
     distinctUntilChanged( shallowEq ),
 
     filter( tuple => tuple[0] ),  // isStorageReady == true
-    filter( tuple => tuple[1] !== "<unknown>" ),
+    filter( tuple => tuple[1].model !== "<unknown>" ),
 
-    mergeMap( ([ _, model ]) => of(
+    mergeMap( ([ _, aircraft ]) => of(
         A.setLoadingConfig( true ),
-        A.setEnablePropMixBar( config.getEnablePropMixBar( model ) ),
+        A.setEnablePropMixBar( config.getEnablePropMixBar( aircraft.model, aircraft.category ) ),
         A.setLoadingConfig( false ),
     ) ),
 );
@@ -148,11 +150,11 @@ const fetchSimVarAircraft: E = action$ => action$.pipe(
     throttleTime( AIRCRAFT_DATA_UPDATE_INTERVAL ),
     map( () => A.setAircraft( getAircraftData() ) ),
 );
-const fetchSimVarInput: E = action$ => action$.pipe(
+const fetchSimVarInput: E = ( action$, state$ ) => action$.pipe(
     filter( A.fetchSimVar.match ),
-    map( () => A.setInput( getInputData() ) ),
+    withLatestFrom( state$ ),
+    map( ([ _, state ] ) => A.setInput( getInputData( state.aircraft.category ) ) ),
 );
-
 
 const forceUpdateAllInput: E = ( action$, state$ ) => action$.pipe(
     filter( A.forceUpdateAllInputs.match ),
@@ -323,6 +325,15 @@ const checkAircraftName: E = action$ => action$.pipe(
     } ),
     ignoreElements(),
 );
+const checkCategory: E = action$ => action$.pipe(
+    filter( A.setAircraft.match ),
+    map( ({ payload }) => payload.category ),
+    distinctUntilChanged(),
+    tap( category => {
+        updateCategory( category );
+    } ),
+    ignoreElements(),
+);
 
 const handleUpdateWidgetScale: E = ( action$, state$ ) => action$.pipe(
     filter( A.updateWidgetScale.match ),
@@ -411,6 +422,7 @@ const epics: E[] = [
     checkQuickHideDuration,
     checkConfigEnablePropMixBar,
     checkAircraftName,
+    checkCategory,
 
     // Resize
     handleUpdateWidgetScale,

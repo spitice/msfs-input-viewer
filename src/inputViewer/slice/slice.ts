@@ -37,6 +37,7 @@ const initialState: InputViewerState = {
     },
 
     aircraft: {
+        category: "airplane",
         model: "<unknown>",
         name: "<unknown>",
         numEngines: 1,

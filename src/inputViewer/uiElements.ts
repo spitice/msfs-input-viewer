@@ -24,7 +24,9 @@ export class UIElements {
 
         main: Elements<StickInput> & Elements<RudAxis> & Elements_Bar;
         numberSimple: NumberDisplayElements;
+        numberSimpleLabel: NumberDisplayElements;
         numberVerbose: NumberDisplayElements;
+        numberVerboseLabel: NumberDisplayElements;
 
         confAutoHideHeader: ToggleButtonElement;
         confPanels: NewListButtonElement;

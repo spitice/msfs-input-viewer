@@ -31,6 +31,11 @@
         @content;
     }
 }
+@mixin forHelicopter() {
+    @at-root #InputViewer[data-category="helicopter"] & {
+        @content;
+    }
+}
 
 @mixin fill {
     position: absolute;
@@ -404,6 +409,9 @@ html, body {
         }
         .propellerPrimary {
             fill: #004DC7;
+            @include forHelicopter() {
+                fill: #818181;  
+            }
         }
         .mixturePrimary {
             fill: #B1352A;
@@ -571,6 +579,9 @@ toggle-button.togglePropMix {
             &.propeller {
                 .fg {
                     fill: skyblue;
+                    @include forHelicopter() {
+                        fill: #DDDDDD;  
+                    }
                 }
             }
             &.mixture {

@@ -64,12 +64,16 @@ declare global {
         "GENERAL ENG PROPELLER LEVER POSITION:1": number;
         "GENERAL ENG MIXTURE LEVER POSITION:1": number;
 
+        "CATEGORY": string,
         "NUMBER OF ENGINES": number;
 
         "TITLE": string;
         "ATC MODEL": string;
 
         "AUTOPILOT AIRSPEED HOLD": boolean;
+
+        // Helicopters
+        "DISK BANK PCT:1": number;
     }
 
     interface SimVarUnitTypeMap {

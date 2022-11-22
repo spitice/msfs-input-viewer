@@ -14,7 +14,13 @@ export type InputData = {
     [key in SimVarAxisInput]: number;
 };
 
+export type Category = "airplane" | "helicopter";
+
 export interface AircraftData {
+    /**
+     * "Airplane" or "Helicopter"
+     */
+    category: Category;
     /**
      * "TITLE" may differ based on the livery currently using so we use "ATC
      * MODEL" to distinguish the aircraft types.

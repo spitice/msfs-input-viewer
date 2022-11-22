@@ -49,11 +49,11 @@ class InputViewerElement extends TemplateElement implements IUIElement {
             };
         };
 
-        const findNumberDisplay = ( id: string ): NumberDisplayElements => {
+        const findNumberDisplay = ( id: string, component: "name" | "label" | "numberDisp" ): NumberDisplayElements => {
             const parent = find( id );
             const findNum = ( className: string ) => {
                 const query = "." + className;
-                const el = parent.querySelector( `.numberDisp.${className}` ) as HTMLElement;
+                const el = parent.querySelector( `.${component}.${className}` ) as HTMLElement;
                 if ( !el ) {
                     throw new Error( query + " not found" );
                 }
@@ -148,8 +148,10 @@ class InputViewerElement extends TemplateElement implements IUIElement {
                 propeller1: findBar( "PropellerBar_1" ),
                 mixture1:   findBar( "MixtureBar_1" ),
             },
-            numberSimple: findNumberDisplay( "NumberDisp_Simple_Container" ),
-            numberVerbose: findNumberDisplay( "NumberDisp_Verbose_Container" ),
+            numberSimpleLabel: findNumberDisplay( "NumberDisp_Simple_Container", "name" ),
+            numberSimple: findNumberDisplay( "NumberDisp_Simple_Container", "numberDisp" ),
+            numberVerboseLabel: findNumberDisplay( "NumberDisp_Verbose_Container", "label" ),
+            numberVerbose: findNumberDisplay( "NumberDisp_Verbose_Container", "numberDisp" ),
 
             confAutoHideHeader: elConfAutoHide,
             confPanels: elConfPanels,
