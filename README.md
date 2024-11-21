@@ -118,6 +118,11 @@ https://github.com/spitice/msfs-input-viewer
 
 ## Changelogs
 
+### v1.4.0 (November 21, 2024)
+
+- Now compatible with MSFS 2024
+- Some performance optimizations
+
 ### v1.3.0 (November 22, 2022)
 
 - Add support for helicopters added in Sim Update 11
