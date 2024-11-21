@@ -56,7 +56,8 @@ html, body {
 
 #InputViewer_UIFrame {
     z-index: 0;
-    
+    height: 100vh !important;
+
     > ingame-ui-header {
         z-index: -1;
         position: relative;
@@ -130,11 +131,11 @@ html, body {
         width: var(--wrapperWidth);
         height: var(--wrapperHeight);
         top: var(--wrapperOffsetY);
-    
+
         #PanelGrid {
             width: var(--panelGridWidth);
             height: var(--panelGridHeight);
-    
+
             --leftWidgetWidth: #{scaledWidget(60)};
             --rightWidgetWidth: #{scaledWidget(220)};
             --topWidgetHeight: #{scaledWidget(220)};
@@ -216,10 +217,10 @@ html, body {
 
         @include panelsAndNumberDisplayType("throttle", "simple") {
             grid-template-columns: var(--leftWidgetWidth) #{scaledWidget(60)};
-            grid-template-areas: 
+            grid-template-areas:
                 "throttle stick"
                 "misc misc";
-            
+
             #StickPanel {
                 display: inline;
 
@@ -410,7 +411,7 @@ html, body {
         .propellerPrimary {
             fill: #004DC7;
             @include forHelicopter() {
-                fill: #818181;  
+                fill: #818181;
             }
         }
         .mixturePrimary {
@@ -475,7 +476,7 @@ html, body {
     }
 }
 
-toggle-button.togglePropMix {  
+toggle-button.togglePropMix {
     @function handleOffset($factor) {
         // More factor, more left
         @return var(--leftPos, #{scaled(72 - 12 * $factor - 4)});
@@ -580,7 +581,7 @@ toggle-button.togglePropMix {
                 .fg {
                     fill: skyblue;
                     @include forHelicopter() {
-                        fill: #DDDDDD;  
+                        fill: #DDDDDD;
                     }
                 }
             }
