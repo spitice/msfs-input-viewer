@@ -114,4 +114,18 @@ declare global {
     function SetStoredData( _key: string, _data: string ): string | null;
     function DeleteStoredData( _key: string ): string | null;
     function SearchStoredData( _key: string ): { key: string, data: string }[] | null;
+
+    // common.js
+    /**
+     * Updates `textContent` if the value is changed.
+     */
+    function diffAndSetText( _element: HTMLElement, _newValue: string ): void;
+    /**
+     * Updates `innerHTML` if the value is changed.
+     */
+    function diffAndSetHTML( _element: HTMLElement, _newValue: string ): void;
+    /**
+     * Calls `setAttribute` if the value is changed.
+     */
+    function diffAndSetAttribute( _element: HTMLElement, _attribute: string, _newValue: any ): void;
 }

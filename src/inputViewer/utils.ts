@@ -1,4 +1,17 @@
 
+export function diffAndSetInnerText( el: HTMLElement, text: string ) {
+    if ( el.innerText !== text ) {
+        el.innerText = text;
+    }
+}
+
+export function diffAndForceToggleClassList( el: HTMLElement, token: string, value: boolean ) {
+    const currentValue = el.classList.contains( token );
+    if ( currentValue !== value ) {
+        el.classList.toggle( token, value );
+    }
+}
+
 export function safeCall<T extends any[], R>( fn: ( ...args: T ) => R ) {
     return ( ...args: T ) => {
         try {
@@ -20,8 +33,8 @@ export function appendDebugMsg( ...args: any[] ) {
     elDebugMsg.innerText += "" + args.join( " " ) + "\n";
 }
 
-export function setTranslate( el: Element, x: number, y: number ) {
-    el.setAttribute( "transform", `translate(${x}, ${y})` );
+export function setTranslate( el: HTMLElement, x: number, y: number ) {
+    diffAndSetAttribute( el, "transform", `translate(${x}, ${y})` );
 }
 
 export function zip<T, U>( a: T[], b: U[] ): [T, U][] {

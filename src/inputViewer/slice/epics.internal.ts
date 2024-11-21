@@ -1,5 +1,9 @@
 
-import { setTranslate } from "../utils";
+import {
+    diffAndForceToggleClassList,
+    diffAndSetInnerText,
+    setTranslate,
+} from "../utils";
 import { UIElements } from "../uiElements";
 import {
     AircraftData,
@@ -193,7 +197,7 @@ const NumDispLabels: Record<
 };
 
 export function updateCategory( category: Category ) {
-    UIElements.el.root.setAttribute( "data-category", category );
+    diffAndSetAttribute( UIElements.el.root, "data-category", category );
 
     // Update labels
     const simpleLabels = category === "airplane"
@@ -206,9 +210,9 @@ export function updateCategory( category: Category ) {
     for ( let key_ in simpleLabels ) {
         const key = key_ as SimVarAxisInput;
         if ( simpleLabels[key] !== null ) {
-            UIElements.el.numberSimpleLabel[key].textContent = simpleLabels[key];
+            diffAndSetText( UIElements.el.numberSimpleLabel[key], simpleLabels[key]! );
         }
-        UIElements.el.numberVerboseLabel[key].textContent = verboseLabels[key];
+        diffAndSetText( UIElements.el.numberVerboseLabel[key], verboseLabels[key]! );
     }
 }
 
@@ -223,19 +227,19 @@ export function updateRudder( key: RudAxis, value: number ) {
 export function updateHorizontalBar( key: BrakeAxis, value: number ) {
     const el = UIElements.el.main[key];
     value = value * 100;
-    el.fg.setAttribute( "width", value.toString() );
+    diffAndSetAttribute( el.fg, "width", value.toString() );
     setTranslate( el.cap, value, 0 );
 };
 
 export function updateVerticalBar( key: ThrottleAxis, value: number ) {
     const el = UIElements.el.main[key];
     value = value * 100;
-    el.fg.setAttribute( "height", value.toString() );
+    diffAndSetAttribute( el.fg, "height", value.toString() );
     setTranslate( el.cap, 0, value );
 };
 
 export function updateNumberDisplayVerbose( key: SimVarAxisInput, value: number ) {
-    UIElements.el.numberVerbose[key].innerText = value.toString();
+    diffAndSetInnerText( UIElements.el.numberVerbose[key], value.toString() );
 }
 
 const trimAxis: SimVarAxisInput[] = [
@@ -256,11 +260,11 @@ export function simplifyNumber( key: SimVarAxisInput, value: number ) {
 }
 
 export function updateNumberDisplaySimple( key: SimVarAxisInput, value: number ) {
-    UIElements.el.numberSimple[key].textContent = simplifyNumber( key, value );
+    diffAndSetText( UIElements.el.numberSimple[key],  simplifyNumber( key, value ) );
 }
 
 export function updateNumberDisplaySimpleSign( key: SimVarAxisInput, sign: number ) {
-    UIElements.el.numberSimple[key].classList.toggle( "zero", sign === 0 || sign === -0 );
+    diffAndForceToggleClassList( UIElements.el.numberSimple[key], "zero", sign === 0 || sign === -0 );
 }
 
 export function getThrottlePanelMode( enablePropMixBar: boolean, numEngines: number ) {
@@ -278,7 +282,7 @@ export function getThrottlePanelMode( enablePropMixBar: boolean, numEngines: num
 }
 
 export function updateThrottlePanelMode( mode: ReturnType<typeof getThrottlePanelMode> ) {
-    UIElements.el.root.setAttribute( "data-throttle-panel-mode", mode );;
+    diffAndSetAttribute( UIElements.el.root, "data-throttle-panel-mode", mode );
     console.log( "[updateThrottlePanelMode] mode: " + mode );
 }
 
@@ -306,17 +310,17 @@ function setListCurrentChoice( el: NewListButtonElement, choice: string ) {
 }
 
 export function updateAutoHideHeader( value: boolean ) {
-    UIElements.el.root.setAttribute( "data-auto-hide-header", value.toString() );
+    diffAndSetAttribute( UIElements.el.root, "data-auto-hide-header", value.toString() );
     setToggleValue( UIElements.el.confAutoHideHeader, value );
 }
 
 export function updatePanelsToShow( type: PanelsToShow ) {
-    UIElements.el.root.setAttribute( "data-panels", type );
+    diffAndSetAttribute( UIElements.el.root, "data-panels", type );
     setListCurrentChoice( UIElements.el.confPanels, type );
 }
 
 export function updateNumberDisplayType( type: NumberDisplayType ) {
-    UIElements.el.root.setAttribute( "data-number-display-type", type );
+    diffAndSetAttribute( UIElements.el.root, "data-number-display-type", type );
     setListCurrentChoice( UIElements.el.confNumericDisp, type );
 }
 
@@ -329,7 +333,7 @@ export function updateEnablePropMixBar( value: boolean ) {
 }
 
 export function updateAircraftName( name: string ) {
-    UIElements.el.confAircraftModel.innerText = Utils.Translate( name )!;
+    diffAndSetInnerText( UIElements.el.confAircraftModel, Utils.Translate( name )! );
 }
 
 export function quickHidePanel( duration: number ) {
